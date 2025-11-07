@@ -46,26 +46,41 @@
 
             <div class="mb-3">
                 <label class="form-label">Nama</label>
-                <input type="text" name="name" class="form-control" placeholder="Masukkan nama" required>
+                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                    placeholder="Masukkan nama" value="{{ old('name') }}" required>
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                    placeholder="Masukkan email" value="{{ old('email') }}" required>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="Masukkan password" required>
+                <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
+                    placeholder="Masukkan password" required>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Role</label>
-                <select name="role" class="form-select" required>
+                <select name="role" class="form-select @error('role') is-invalid @enderror" required>
                     <option value="" selected disabled>Pilih role</option>
-                    <option value="admin">Admin</option>
-                    <option value="customer">Karyawan</option>
+                    <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>Karyawan</option>
                 </select>
+                @error('role')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
 
             <button type="submit" class="btn btn-login w-100 mt-2">Login</button>
