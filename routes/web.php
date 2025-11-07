@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // ===========================
@@ -11,7 +12,7 @@ Route::prefix('/')->group(function () {
         return view('user.tracking');
     })->name('user.tracking');
 
-    // Halaman Lokasi 
+    // Halaman Lokasi
     Route::get('/lokasi', function () {
         return view('user.lokasi');
     })->name('user.lokasi');
@@ -19,11 +20,9 @@ Route::prefix('/')->group(function () {
 
 
 
+
 // ===========================
-// ROUTE UNTUK ADMINSIDE 
+// ROUTE UNTUK ADMINSIDE
 // ===========================
-// Route::prefix('admin')->group(function () {
-//     Route::get('/', function () {
-//         return "Halaman Dashboard Admin (Coming Soon)";
-//     })->name('admin.dashboard');
-// });
+Route::get('/login', [AuthController::class, 'index'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
