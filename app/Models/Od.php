@@ -8,13 +8,27 @@ use Illuminate\Database\Eloquent\Model;
 class Od extends Model
 {
     use HasFactory;
+
+    protected $table = 'od';
+
     protected $fillable = [
         'order_id',
         'layanan_id',
         'berat',
         'harga',
-        'subtotal'
+        'subtotal',
     ];
+
+    protected $casts = [
+        'berat' => 'decimal:2',
+        'harga' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+    ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 
     public function layanan() {
         return $this->belongsTo(Layanan::class);

@@ -17,13 +17,44 @@ class Order extends Model
         'resi',
         'total_harga',
         'tanggal_pemesanan',
-        'tanggal_selesai'
+        'tanggal_selesai',
     ];
 
-    public function user() {
+    protected $casts = [
+        'tanggal_pemesanan' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+        'total_harga' => 'decimal:2',
+    ];
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function od() {
-        return $this->hasMany(Od::class);
+
+
+    public function od() 
+    {
+        return $this->hasMany(Od::class, 'order_id');
+    }
+
+    // Scope untuk filter status
+    public function scopeMenunggu($query)
+    {
+        return $query->where('status', 'Menunggu');
+    }
+
+    public function scopeDiproses($query)
+    {
+        return $query->where('status', 'Diproses');
+    }
+
+    public function scopeSelesai($query)
+    {
+        return $query->where('status', 'Selesai');
+    }
+
+    public function scopeDiambil($query)
+    {
+        return $query->where('status', 'Diambil');
     }
 }
