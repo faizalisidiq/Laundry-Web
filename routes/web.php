@@ -1,33 +1,27 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 
 // ===========================
 // ROUTE UNTUK USERSIDE
 // ===========================
 Route::prefix('/')->group(function () {
-    // Halaman Tracking
     Route::get('/', function () {
         return view('user.tracking');
     })->name('user.tracking');
 
-    // Halaman Lokasi
+
     Route::get('/lokasi', function () {
         return view('user.lokasi');
     })->name('user.lokasi');
 });
 
-// ===========================
-// ROUTE UNTUK Dashboard
-// ===========================
-// Route::get('/dashboard', function () {
-//     return auth()->user();
-//     return view('admin.dashboard');
-// })->name('dashboard');
 
-Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
 
 
 
@@ -36,4 +30,14 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->middleware('auth
 // ===========================
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate']);
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ===========================
+// ROUTE UNTUK Dashboard & CRUD
+// ===========================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('layanan', LayananController::class);
+    Route::resource('pesanan', OrderController::class);
+    Route::post('pesanan/{pesanan}/update-status', [OrderController::class, 'updateStatus'])->name('pesanan.update-status');
+});

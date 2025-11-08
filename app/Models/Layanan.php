@@ -12,7 +12,12 @@ class Layanan extends Model
         'nama_layanan',
         'deskripsi',
         'harga',
-        'durasi_hari'
+        'durasi_hari',
+    ];
+
+    protected $casts = [
+        'harga' => 'decimal:2',
+        'durasi_hari' => 'integer',
     ];
 
     public function od() {
