@@ -7,66 +7,98 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    function login()
+    /**
+     * Tampilkan halaman login
+     */
+    public function login()
     {
+        // Redirect ke dashboard jika sudah login
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+        
         return view('auth.login');
     }
 
-    function authenticate(Request $request)
+    /**
+     * Proses login
+     */
+    public function authenticate(Request $request)
     {
-        // Validasi input dengan custom error message
-        $request->validate([
-            'name' => ['required'],
+        // Validasi input
+        $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'role' => ['required'],
         ], [
-            'name.required' => 'Nama wajib diisi.',
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'password.required' => 'Password wajib diisi.',
-            'role.required' => 'Role wajib dipilih.',
         ]);
 
-        // Login hanya dengan email & password
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        // Attempt login dengan remember me
+        $remember = $request->filled('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
             $user = Auth::user();
 
-            // Validasi name
-            if ($user->name !== $request->name) {
-                Auth::logout();
-                return back()->withErrors(['name' => 'Nama tidak sesuai dengan akun.'])->withInput();
+            // Log aktivitas login (opsional)
+            \Log::info('User logged in', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'role' => $user->role->name,
+            ]);
+
+            // Redirect berdasarkan role
+            if ($user->isSuperAdmin()) {
+                return redirect()->intended('dashboard')->with('success', 'Selamat datang, Super Admin!');
+            } elseif ($user->isAdmin()) {
+                return redirect()->intended('dashboard')->with('success', 'Selamat datang, Admin!');
             }
 
-            // Validasi role
-            if ($user->role !== $request->role) {
-                Auth::logout();
-                return back()->withErrors(['role' => 'Role tidak sesuai dengan akun.'])->withInput();
-            }
-
-            $request->session()->regenerate();
+            // Default redirect
             return redirect()->intended('dashboard');
         }
 
-        // Jika email/password salah
+        // Login gagal
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ])->withInput($request->only('email', 'name', 'role'));
+        ])->onlyInput('email');
     }
 
-    function logout(Request $request)
+    /**
+     * Logout user
+     */
+    public function logout(Request $request)
     {
+        $user = Auth::user();
+
+        // Log aktivitas logout (opsional)
+        \Log::info('User logged out', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+        ]);
+
         Auth::logout();
 
         $request->session()->invalidate();
-
+        
         $request->session()->regenerateToken();
 
-        return redirect('login');
+        return redirect()->route('login')->with('success', 'Anda telah logout.');
     }
 
-    function dashboard()
+    /**
+     * Dashboard
+     */
+    public function dashboard()
     {
-        return view('admin.dashboard');
+        $user = Auth::user();
+
+        return view('admin.dashboard', [
+            'user' => $user,
+            'role' => $user->role,
+        ]);
     }
 }

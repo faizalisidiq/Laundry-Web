@@ -16,7 +16,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role_id', // Ubah dari 'role' menjadi 'role_id'
         'phone',
     ];
 
@@ -35,18 +35,32 @@ class User extends Authenticatable
         ];
     }
 
+    // Relasi dengan Role
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    // Relasi dengan Orders
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
 
+    // Method untuk cek role
     public function isSuperAdmin()
     {
-        return $this->role === 'superadmin';
+        return $this->role->name === 'superadmin';
     }
 
     public function isAdmin()
     {
-        return $this->role === 'admin';
+        return $this->role->name === 'admin';
+    }
+
+    // Optional: Method tambahan untuk cek role dengan lebih fleksibel
+    public function hasRole($roleName)
+    {
+        return $this->role->name === $roleName;
     }
 }
