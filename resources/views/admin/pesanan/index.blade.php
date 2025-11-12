@@ -51,6 +51,25 @@
       background-color: #dc3545;
       color: white;
     }
+    
+
+    nav[role="navigation"] svg {
+  width: 16px !important;   /* default 20px */
+  height: 16px !important;
+}
+
+/* Jika masih terasa besar, ubah jadi 14px */
+nav[role="navigation"] svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* Opsional: atur font dan jarak tombol pagination */
+nav[role="navigation"] span,
+nav[role="navigation"] a {
+  font-size: 14px !important;
+  padding: 4px 8px !important;
+}
   </style>
 </head>
 <body>
