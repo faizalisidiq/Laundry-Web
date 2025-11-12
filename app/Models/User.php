@@ -25,7 +25,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    
+
 
     protected function casts(): array
     {
@@ -48,14 +48,14 @@ class User extends Authenticatable
     }
 
     // Method untuk cek role
-    public function isSuperAdmin()
-    {
-        return $this->role->name === 'superadmin';
-    }
-
     public function isAdmin()
     {
         return $this->role->name === 'admin';
+    }
+
+    public function isKaryawan()
+    {
+        return $this->role->name === 'karyawan';
     }
 
     // Optional: Method tambahan untuk cek role dengan lebih fleksibel

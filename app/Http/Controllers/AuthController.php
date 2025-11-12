@@ -52,10 +52,10 @@ class AuthController extends Controller
             ]);
 
             // Redirect berdasarkan role
-            if ($user->isSuperAdmin()) {
-                return redirect()->intended('dashboard')->with('success', 'Selamat datang, Super Admin!');
-            } elseif ($user->isAdmin()) {
+            if ($user->isAdmin()) {
                 return redirect()->intended('dashboard')->with('success', 'Selamat datang, Admin!');
+            } elseif ($user->isKaryawan()) {
+                return redirect()->intended('dashboard')->with('success', 'Selamat datang, Karyawan!');
             }
 
             // Default redirect

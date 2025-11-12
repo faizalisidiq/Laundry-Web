@@ -3,13 +3,17 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <h4 class="text-center text-white mb-4 fw-bold">Laundry Admin</h4>
+    @if (auth()->user()->isAdmin())
+        <h4 class="text-center text-white mb-4 fw-bold">Laundry Admin</h4>
+    @elseif (auth()->user()->isKaryawan())
+        <h4 class="text-center text-white mb-4 fw-bold">Laundry Karyawan</h4>
+    @endif
 
   <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
     🏠 Dashboard
   </a>
 
-  @if (auth()->user()->isSuperAdmin())
+  @if (auth()->user()->isAdmin())
     <a href="{{ route('layanan.index') }}" class="{{ request()->routeIs('layanan.*') ? 'active' : '' }}">
         🧺 Layanan
     </a>
@@ -21,13 +25,13 @@
 
   <hr class="my-2" style="border-color: rgba(255,255,255,0.2);">
 
-    @if (auth()->user()->isSuperAdmin())
+    @if (auth()->user()->isAdmin())
         <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
             👥 Kelola User
         </a>
     @endif
 
-    @if (auth()->user()->isSuperAdmin())
+    @if (auth()->user()->isAdmin())
         <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
         🔐 Kelola Role
         </a>
