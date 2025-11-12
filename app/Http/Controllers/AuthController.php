@@ -55,7 +55,7 @@ class AuthController extends Controller
             if ($user->isAdmin()) {
                 return redirect()->intended('dashboard')->with('success', 'Selamat datang, Admin!');
             } elseif ($user->isKaryawan()) {
-                return redirect()->intended('dashboard')->with('success', 'Selamat datang, Karyawan!');
+                return redirect()->intended('dashboard')->with('success', 'Selamat datang, '. $user->name . '!');
             }
 
             // Default redirect
