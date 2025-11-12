@@ -78,29 +78,43 @@
   <!-- Main Content -->
   <div class="content">
     <div class="container-fluid mt-4">
-      
+
       <!-- Alert Messages -->
       @if(session('success'))
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <div class="alert alert-success alert-dismissible fade show" role="alert" id="successAlert">
         <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
       @endif
 
       @if(session('error'))
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" id="errorAlert">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
       @endif
 
       @yield('content')
-      
+
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  @yield('scripts')
+    <script>
+        const successAlert = document.getElementById('successAlert');
+        if (successAlert) {
+            setTimeout(function() {
+                const bsAlert = new bootstrap.Alert(successAlert);
+                bsAlert.close();
+            }, 3000); // 3000ms = 3 detik
+        }
+        const errorAlert = document.getElementById('errorAlert');
+        if (errorAlert) {
+            setTimeout(function() {
+                const bsAlert = new bootstrap.Alert(errorAlert);
+                bsAlert.close();
+            }, 5000); // 5000ms = 5 detik
+        }
+    </script>
 </body>
-
 </html>
