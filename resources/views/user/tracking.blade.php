@@ -58,7 +58,7 @@
 
         .header img {
             height: 100px;
-            padding: 5px 10px; ;
+            padding: 5px 10px;
             width: auto;
             animation: pulse 2s infinite alternate;
             filter: drop-shadow(0 4px 8px rgba(255, 107, 53, 0.3));
@@ -122,9 +122,7 @@
             margin-bottom: 20px;
             text-align: center;
             animation: fadeInUp 0.8s ease-out 0.2s both;
-            /* text-shadow: 
-                0 2px 10px rgba(255, 107, 53, 0.3),
-                0 4px 20px rgba(255, 154, 86, 0.2); */
+ 
             letter-spacing: -0.5px;
         }
 
@@ -161,7 +159,7 @@
                 0 0 0 15px rgba(255, 255, 255, 0.1),
                 inset 0 -20px 40px rgba(255, 154, 86, 0.1);
             transition: all 0.4s ease;
-            
+
         }
         .circle-bg::before {
             content: '';
@@ -183,7 +181,7 @@
             height: 80px;
             background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%);
             border-radius: 50%;
-            /* animation: float 8s ease-in-out infinite reverse; */
+
         }
 
         .logomain {
@@ -203,7 +201,7 @@
             top: 50%;
             left: 90%;
             transform: translate(-60%, -60%);
-            z-index: 4; /* <--- ubah dari 4 ke 3 agar di atas circle dan di bawah logo-berlian */
+            z-index: 4;
         }
 
 
@@ -213,7 +211,7 @@
             animation: fadeInUp 0.8s ease-out 0.6s both;
             padding: 10px 4px;
             backdrop-filter: blur(1px);
-            
+
         }
 
         .tracking-info h3 {
@@ -484,11 +482,7 @@
             }
         }
 
-        @keyframes rotateWater {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
+        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -728,8 +722,9 @@
     <header class="header">
         <img src="{{ asset('images/logo-berlian.png') }}" alt="Berlian Laundry Logo">
         <nav>
-            <a  >Tracking</a>
+            <a href="{{ url('/') }}">Tracking</a>
             <a href="{{ url('/lokasi') }}">Lokasi</a>
+            <a href="{{ url('/login') }}">Admin</a>
         </nav>
     </header>
 
@@ -785,7 +780,7 @@
         const trackingBtn = document.getElementById('trackingBtn');
         const errorMessage = document.getElementById('errorMessage');
 
-        // Fungsi untuk validasi input
+        
         function validateInputs() {
             let allFilled = true;
             let resi = '';
@@ -797,13 +792,11 @@
                 resi += input.value;
             });
 
-            // Hanya angka yang diperbolehkan
+ 
             const isNumeric = /^\d+$/.test(resi);
-
-            // Enable/disable tombol berdasarkan validasi
             trackingBtn.disabled = !(allFilled && isNumeric);
 
-            // Hapus error state jika semua terisi
+
             if (allFilled && isNumeric) {
                 hideError();
             }
@@ -811,7 +804,7 @@
             return allFilled && isNumeric;
         }
 
-        // Fungsi untuk menampilkan error
+
         function showError() {
             errorMessage.classList.add('show');
             inputs.forEach(input => {
@@ -821,7 +814,7 @@
             });
         }
 
-        // Fungsi untuk menyembunyikan error
+   
         function hideError() {
             errorMessage.classList.remove('show');
             inputs.forEach(input => {
@@ -829,22 +822,22 @@
             });
         }
 
-        // Event listener untuk setiap input
+
         inputs.forEach((input, index) => {
-            // Validasi input hanya angka
+
             input.addEventListener('input', (e) => {
-                // Hanya allow angka
+ 
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
                 
-                // Jika diisi 1 karakter, lanjut ke input berikutnya
+  
                 if (e.target.value.length === 1 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                 }
 
-                // Validasi real-time
+
                 validateInputs();
 
-                // Tambah animasi kalau terisi
+
                 if (e.target.value.length > 0) {
                     input.classList.add('filled');
                     input.classList.remove('error');
@@ -853,25 +846,26 @@
                 }
             });
 
-            // Jika tekan Backspace, pindah ke input sebelumnya
+
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Backspace' && !input.value && index > 0) {
                     inputs[index - 1].focus();
                 }
+             
                 
-                // Submit dengan Enter di input terakhir
                 if (e.key === 'Enter' && index === inputs.length - 1) {
                     trackResi();
                 }
             });
 
-            // Paste handling untuk input multiple digits
+
             input.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const pasteData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
                 
+
                 if (pasteData.length === 4) {
-                    // Isi semua input dengan data paste
+
                     inputs.forEach((input, idx) => {
                         if (idx < pasteData.length) {
                             input.value = pasteData[idx];
@@ -883,8 +877,8 @@
                 }
             });
         });
+        
 
-        // Fungsi tracking resi
         function trackResi() {
             if (!validateInputs()) {
                 showError();
@@ -894,24 +888,22 @@
             let resi = '';
             inputs.forEach(input => resi += input.value);
 
-            // Validasi final sebelum redirect
             if (resi.length === 4 && /^\d+$/.test(resi)) {
-                // Redirect ke halaman tracking detail
                 window.location.href = `/tracking-detail/${resi}`;
             } else {
                 showError();
             }
         }
 
-        // Event listener untuk tombol
+
         trackingBtn.addEventListener('click', trackResi);
 
-        // Auto-focus ke input pertama saat page load
+
         window.addEventListener('load', () => {
             inputs[0].focus();
         });
 
-        // Real-time validation
+
         inputs.forEach(input => {
             input.addEventListener('blur', validateInputs);
         });

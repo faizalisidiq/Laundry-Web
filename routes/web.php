@@ -40,8 +40,14 @@ Route::middleware('auth')->group(function () {
     // Pesanan - Admin dan Superadmin
     Route::middleware('role:admin,superadmin')->group(function () {
         Route::resource('pesanan', OrderController::class);
-        Route::post('/pesanan/{pesanan}/update-status', [OrderController::class, 'updateStatus'])
-            ->name('pesanan.update-status');
+        
+        // Additional routes untuk pesanan
+        Route::put('/pesanan/{pesanan}/updateStatus', [OrderController::class, 'updateStatus'])
+            ->name('pesanan.updateStatus');
+        Route::get('/pesanan/{pesanan}/print', [OrderController::class, 'printStruk'])
+            ->name('pesanan.print');
+        Route::get('/pesanan/{pesanan}/send-whatsapp', [OrderController::class, 'sendWhatsApp'])
+            ->name('pesanan.sendWhatsApp');
     });
 
     // Layanan - Superadmin only
@@ -55,9 +61,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-// ===========================
-// REDIRECT ROOT
-// ===========================
-Route::get('/', function () {
-    return auth()->check() ? redirect('/dashboard') : redirect('/login');
-});
+

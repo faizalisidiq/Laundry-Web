@@ -43,6 +43,14 @@
       background: #ffffff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    .badge-wa-sent {
+      background-color: #25D366;
+      color: white;
+    }
+    .badge-wa-pending {
+      background-color: #dc3545;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -126,13 +134,14 @@
                 <tr>
                   <th width="5%">No</th>
                   <th width="10%">Resi</th>
-                  <th width="15%">Pelanggan</th>
-                  <th width="12%">Telepon</th>
-                  <th width="10%">Status</th>
-                  <th width="12%">Total Harga</th>
-                  <th width="13%">Tgl Pesan</th>
-                  <th width="13%">Tgl Selesai</th>
-                  <th width="10%" class="text-center">Aksi</th>
+                  <th width="12%">Pelanggan</th>
+                  <th width="10%">Telepon</th>
+                  <th width="8%">Status</th>
+                  <th width="8%">Pembayaran</th>
+                  <th width="10%">Total Harga</th>
+                  <th width="10%">Tgl Pesan</th>
+                  <th width="8%">WA</th>
+                  <th width="19%" class="text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,9 +163,24 @@
                     @endphp
                     <span class="badge bg-{{ $statusClass }}">{{ $order->status }}</span>
                   </td>
+                  <td>
+                    <span class="badge bg-{{ $order->payment_status == 'Lunas' ? 'success' : 'danger' }}">
+                      {{ $order->payment_status }}
+                    </span>
+                  </td>
                   <td class="text-primary fw-bold">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</td>
                   <td>{{ \Carbon\Carbon::parse($order->tanggal_pemesanan)->format('d/m/Y H:i') }}</td>
-                  <td>{{ \Carbon\Carbon::parse($order->tanggal_selesai)->format('d/m/Y H:i') }}</td>
+                  <td>
+                    @if($order->wa_sent)
+                      <span class="badge badge-wa-sent" title="Terkirim pada {{ $order->wa_sent_at ? \Carbon\Carbon::parse($order->wa_sent_at)->format('d/m/Y H:i') : '-' }}">
+                        <i class="bi bi-check-all"></i> Terkirim
+                      </span>
+                    @else
+                      <span class="badge badge-wa-pending">
+                        <i class="bi bi-x-circle"></i> Belum
+                      </span>
+                    @endif
+                  </td>
                   <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
                       <a href="{{ route('pesanan.show', $order->id) }}" 
@@ -166,6 +190,14 @@
                       <a href="{{ route('pesanan.edit', $order->id) }}" 
                          class="btn btn-warning" title="Edit">
                         <i class="bi bi-pencil"></i>
+                      </a>
+                      <a href="{{ route('pesanan.print', $order->id) }}" 
+                         class="btn btn-secondary" title="Cetak Struk" target="_blank">
+                        <i class="bi bi-printer"></i>
+                      </a>
+                      <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}" 
+                         class="btn btn-success" title="Kirim WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
                       </a>
                       <form action="{{ route('pesanan.destroy', $order->id) }}" 
                             method="POST" 
@@ -182,7 +214,7 @@
                 </tr>
                 @empty
                 <tr>
-                  <td colspan="9" class="text-center text-muted py-4">
+                  <td colspan="10" class="text-center text-muted py-4">
                     <i class="bi bi-inbox display-4 d-block mb-2"></i>
                     Belum ada pesanan
                   </td>
