@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Order;
 use App\Models\Layanan;
 use App\Models\Od;
@@ -25,14 +27,16 @@ class OrderController extends Controller
         // Search
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('resi', 'like', "%{$search}%")
-                ->orWhere('customer_name', 'like', "%{$search}%")
-                ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
-        $orders = $query->paginate(10);
+        // ✅ Pagination dengan mempertahankan parameter filter
+        $perPage = $request->input('per_page', 10);
+        $orders = $query->paginate($perPage)->appends($request->except('page'));
 
         return view('admin.pesanan.index', compact('orders'));
     }
@@ -134,7 +138,6 @@ class OrderController extends Controller
 
             return redirect()->route('pesanan.index')
                 ->with('success', 'Pesanan berhasil ditambahkan dengan resi: ' . $resi);
-
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()
@@ -238,7 +241,6 @@ class OrderController extends Controller
 
             return redirect()->route('pesanan.index')
                 ->with('success', 'Pesanan berhasil diperbarui!');
-
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()
@@ -344,7 +346,6 @@ class OrderController extends Controller
 
             // Redirect ke WhatsApp Web/App
             return redirect($waLink);
-
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Gagal mengirim WhatsApp: ' . $e->getMessage());
