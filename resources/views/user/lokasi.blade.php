@@ -490,8 +490,9 @@
     <header class="header">
         <img src="{{ asset('images/logo-berlian.png') }}" alt="Berlian Laundry Logo">
         <nav>
-            <a href="{{ route('user.tracking') }}">Tracking</a>
-            <a href="{{ route('user.lokasi') }}" style="color: #ff8400ff;">Lokasi</a>
+            <a href="{{ url('/') }}">Tracking</a>
+            <a href="{{ url('/lokasi') }}">Lokasi</a>
+            <a href="{{ url('/login') }}">Admin</a>
         </nav>
     </header>
 

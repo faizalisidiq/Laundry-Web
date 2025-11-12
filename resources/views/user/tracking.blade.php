@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracking | Berlian Laundry</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
         * {
             margin: 0;
@@ -16,7 +14,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-             background: linear-gradient(135deg, #F5A83B 0%, #F5C16B 50%, #FFE8C5 100%);
+            background: linear-gradient(135deg, #F5A83B 0%, #F5C16B 50%, #FFE8C5 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -68,7 +66,6 @@
             display: flex;
             gap: 25px;
             margin-right: 20px;
-            
         }
 
         nav a {
@@ -86,22 +83,6 @@
             color: #ff8400ff;
             background: rgba(255, 154, 86, 0.1);
             transform: translateY(-2px);
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            left: 16px;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #ffb535ff, #F89B29);
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-
-        nav a:hover::after {
-            width: calc(100% - 32px);
         }
 
         .container {
@@ -122,17 +103,7 @@
             margin-bottom: 20px;
             text-align: center;
             animation: fadeInUp 0.8s ease-out 0.2s both;
- 
             letter-spacing: -0.5px;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 40px;
-            text-align: center;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-            font-weight: 400;
         }
 
         .logo-circle-wrapper {
@@ -147,8 +118,7 @@
             width: 280px;
             height: 280px;
             border-radius: 50%;
-            background: 
-                linear-gradient(135deg, #f7b100ff 0%, #fcd395ff 0%);
+            background: linear-gradient(135deg, #f7b100ff 0%, #fcd395ff 0%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -159,29 +129,6 @@
                 0 0 0 15px rgba(255, 255, 255, 0.1),
                 inset 0 -20px 40px rgba(255, 154, 86, 0.1);
             transition: all 0.4s ease;
-
-        }
-        .circle-bg::before {
-            content: '';
-            position: absolute;
-            top: -40px;
-            right: -30px;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(255, 154, 86, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-        }
-
-        .circle-bg::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: -20px;
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%);
-            border-radius: 50%;
-
         }
 
         .logomain {
@@ -193,25 +140,12 @@
             filter: drop-shadow(0 8px 16px rgba(255, 107, 53, 0.2));
         }
 
-        .logoAir {
-            position: absolute;
-            width: 300px;
-            height: auto;
-            opacity: 0.45;
-            top: 50%;
-            left: 90%;
-            transform: translate(-60%, -60%);
-            z-index: 4;
-        }
-
-
         .tracking-info {
             text-align: center;
             margin-bottom: 5px;
             animation: fadeInUp 0.8s ease-out 0.6s both;
             padding: 10px 4px;
             backdrop-filter: blur(1px);
-
         }
 
         .tracking-info h3 {
@@ -253,11 +187,6 @@
             box-shadow: 0 8px 24px rgba(255, 107, 53, 0.15);
         }
 
-        .input-resi input:nth-child(1) { animation-delay: 1s; }
-        .input-resi input:nth-child(2) { animation-delay: 1.1s; }
-        .input-resi input:nth-child(3) { animation-delay: 1.2s; }
-        .input-resi input:nth-child(4) { animation-delay: 1.3s; }
-
         .input-resi input:focus {
             border-color: #ffcd35ff;
             background: white;
@@ -267,8 +196,10 @@
             transform: scale(1.08);
         }
 
-        .input-resi input.filled {
-            animation: bounce 0.5s ease;
+        .input-resi input.error {
+            border-color: #ff4757;
+            background: rgba(255, 71, 87, 0.1);
+            animation: shake 0.5s ease-in-out;
         }
 
         .btn-masuk {
@@ -296,155 +227,44 @@
             box-shadow: 
                 0 15px 40px rgba(255, 107, 53, 0.5),
                 0 0 0 6px rgba(255, 255, 255, 0.25);
-            background: linear-gradient(135deg, #ffcc5eff 0%, #F5A83B 100%);
         }
 
-        .btn-masuk:active {
-            transform: translateY(-2px) scale(0.98);
+        .btn-masuk:disabled {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-masuk::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.6s;
+        .error-message {
+            color: #ff4757;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+            display: none;
+            background: rgba(255, 71, 87, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #ff4757;
         }
 
-        .btn-masuk:hover::before {
-            left: 100%;
+        .error-message.show {
+            display: block;
         }
 
-        .bubbles {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 40% 40%, 
-                rgba(24, 186, 255, 0.5), 
-                rgba(255, 189, 145, 0.3));
-            opacity: 0.7;
-            animation: floatBubble linear infinite;
-            box-shadow: 
-                inset 0 10px 20px rgba(255, 255, 255, 0.3),
-                0 4px 15px rgba(52, 152, 219, 0.2);
-        }
-
-        .bubble::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 15%;
-            width: 40%;
-            height: 40%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
-            border-radius: 50%;
-        }
-
-        .bubble:nth-child(1) {
-            width: 90px;
-            height: 90px;
-            left: 8%;
-            bottom: -100px;
-            animation-duration: 12s;
-            animation-delay: 0s;
-            background: radial-gradient(circle at 30% 30%, rgba(52, 152, 219, 0.6), rgba(255, 154, 86, 0.4));
-        }
-
-        .bubble:nth-child(2) {
-            width: 60px;
-            height: 60px;
-            left: 22%;
-            bottom: -80px;
-            animation-duration: 14s;
-            animation-delay: 2s;
-            background: radial-gradient(circle at 30% 30%, rgba(100, 181, 246, 0.5), rgba(255, 167, 38, 0.3));
-        }
-
-        .bubble:nth-child(3) {
-            width: 45px;
-            height: 45px;
-            left: 42%;
-            bottom: -60px;
-            animation-duration: 10s;
-            animation-delay: 4s;
-        }
-
-        .bubble:nth-child(4) {
-            width: 75px;
-            height: 75px;
-            left: 58%;
-            bottom: -90px;
-            animation-duration: 13s;
-            animation-delay: 1s;
-            background: radial-gradient(circle at 30% 30%, rgba(66, 165, 245, 0.55), rgba(255, 183, 77, 0.35));
-        }
-
-        .bubble:nth-child(5) {
-            width: 50px;
-            height: 50px;
-            left: 73%;
-            bottom: -70px;
-            animation-duration: 11s;
-            animation-delay: 3s;
-        }
-
-        .bubble:nth-child(6) {
-            width: 85px;
-            height: 85px;
-            left: 88%;
-            bottom: -95px;
-            animation-duration: 15s;
-            animation-delay: 0.5s;
-            background: radial-gradient(circle at 30% 30%, rgba(41, 128, 185, 0.6), rgba(255, 193, 7, 0.4));
-        }
-
-        .bubble:nth-child(7) {
-            width: 55px;
-            height: 55px;
-            left: 12%;
-            bottom: -75px;
-            animation-duration: 12.5s;
-            animation-delay: 2.5s;
-        }
-
-        .bubble:nth-child(8) {
-            width: 65px;
-            height: 65px;
-            left: 35%;
-            bottom: -85px;
-            animation-duration: 13.5s;
-            animation-delay: 1.8s;
-            background: radial-gradient(circle at 30% 30%, rgba(30, 136, 229, 0.5), rgba(255, 160, 0, 0.35));
-        }
-
-        .bubble:nth-child(9) {
-            width: 70px;
-            height: 70px;
-            left: 65%;
-            bottom: -80px;
-            animation-duration: 11.5s;
-            animation-delay: 3.5s;
-        }
-
-        .bubble:nth-child(10) {
-            width: 40px;
-            height: 40px;
-            left: 80%;
-            bottom: -60px;
-            animation-duration: 10.5s;
-            animation-delay: 4.5s;
+        .success-message {
+            color: #ff4757;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+            background: rgba(255, 71, 87, 0.1);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 2px solid #ff4757;
         }
 
         footer {
@@ -459,204 +279,30 @@
             box-shadow: 0 -5px 30px rgba(0, 0, 0, 0.2);
         }
 
-        footer a {
-            color: #FF9A56;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        footer a:hover {
-            color: #FF6B35;
-            text-decoration: underline;
-        }
-
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.05);
-            }
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
 
         @keyframes pulseSoft {
-            0% {
-                transform: scale(1);
-            }
-            100% {
-                transform: scale(1.03);
-            }
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
         }
 
         @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.5);
-            }
-            70% {
-                transform: scale(1.1);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes bounce {
-            0%, 20%, 53%, 80%, 100% {
-                transform: translate3d(0,0,0);
-            }
-            40%, 43% {
-                transform: translate3d(0, -8px, 0);
-            }
-            70% {
-                transform: translate3d(0, -4px, 0);
-            }
-            90% {
-                transform: translate3d(0, -2px, 0);
-            }
-        }
-
-        @keyframes floatBubble {
-            0% {
-                transform: translateY(0) translateX(0) scale(1);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.7;
-            }
-            90% {
-                opacity: 0.5;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(30px) scale(0.7);
-                opacity: 0;
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-25px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            header {
-                padding: 15px 25px;
-            }
-
-            .header img {
-                height: 55px;
-            }
-
-            nav {
-                gap: 25px;
-            }
-
-            nav a {
-                font-size: 15px;
-            }
-
-            .title {
-                font-size: 28px;
-                margin-bottom: 15px;
-            }
-
-            .subtitle {
-                font-size: 14px;
-                margin-bottom: 30px;
-            }
-
-            .circle-bg {
-                width: 240px;
-                height: 240px;
-            }
-
-            .logomain {
-                width: 150px;
-            }
-
-            .input-resi {
-                gap: 12px;
-            }
-
-            .input-resi input {
-                width: 55px;
-                height: 55px;
-                font-size: 24px;
-            }
-
-            .btn-masuk {
-                padding: 14px 70px;
-                font-size: 17px;
-            }
-
-            .tracking-info {
-                padding: 20px 30px;
-            }
-
-            .container {
-                padding: 30px 15px 120px;
-            }
-        }
-
-        .input-resi input.error {
-            border-color: #ff4757;
-            background: rgba(255, 71, 87, 0.1);
-            animation: shake 0.5s ease-in-out;
-        }
-
-        .btn-masuk:disabled {
-            background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-masuk:disabled:hover {
-            transform: none;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .error-message {
-            color: #ff4757;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            text-align: center;
-            animation: fadeIn 0.3s ease;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
+            0% { opacity: 0; transform: scale(0.5); }
+            70% { transform: scale(1.1); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         @keyframes shake {
@@ -670,50 +316,11 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 480px) {
-            .title {
-                font-size: 24px;
-            }
-
-            .subtitle {
-                font-size: 13px;
-            }
-
-            .circle-bg {
-                width: 200px;
-                height: 200px;
-            }
-
-            .logomain {
-                width: 120px;
-            }
-
-            .input-resi {
-                gap: 10px;
-            }
-
-            .input-resi input {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-
-            .btn-masuk {
-                padding: 6px 10px;
-                font-size: 16px;
-            }
-
-            .tracking-info {
-                padding: 18px 25px;
-            }
-
-            .tracking-info h3 {
-                font-size: 19px;
-            }
-
-            .tracking-info p {
-                font-size: 13px;
-            }
+        @media (max-width: 768px) {
+            .title { font-size: 24px; }
+            .circle-bg { width: 200px; height: 200px; }
+            .input-resi input { width: 50px; height: 50px; font-size: 22px; }
+            .btn-masuk { padding: 12px 60px; font-size: 16px; }
         }
     </style>
 </head>
@@ -733,8 +340,7 @@
         
         <div class="logo-circle-wrapper">
             <div class="circle-bg">
-                <img src="{{ asset('images/logo-berlian.png') }}" alt="Berlian Laundry Logo" class="logomain">  
-                <img src="{{ asset('images/logoAir.png') }}" alt="Berlian Laundry Logo" class="logoAir">
+                <img src="{{ asset('images/logo-berlian.png') }}" alt="Berlian Laundry Logo" class="logomain">
             </div>
         </div>
 
@@ -743,7 +349,14 @@
             <p>Kami Sudah Memberi Nomor Resi Di Summary WhatsApp<br>Yang sudah kami kirim</p>
         </div>
 
-        <!-- Pesan Error -->
+        <!-- Error dari Server -->
+        @if(session('error'))
+        <div class="success-message">
+            {{ session('error') }}
+        </div>
+        @endif
+
+        <!-- Error Client Side -->
         <div class="error-message" id="errorMessage">
             Harap isi semua digit nomor resi!
         </div>
@@ -758,19 +371,6 @@
         <button class="btn-masuk" id="trackingBtn" disabled>Masuk</button>
     </div>
 
-    <div class="bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div> 
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-    </div>
-
     <footer>
         © 2025 Berlian Laundry. Semua hak dilindungi.
     </footer>
@@ -780,7 +380,6 @@
         const trackingBtn = document.getElementById('trackingBtn');
         const errorMessage = document.getElementById('errorMessage');
 
-        
         function validateInputs() {
             let allFilled = true;
             let resi = '';
@@ -792,10 +391,8 @@
                 resi += input.value;
             });
 
- 
             const isNumeric = /^\d+$/.test(resi);
             trackingBtn.disabled = !(allFilled && isNumeric);
-
 
             if (allFilled && isNumeric) {
                 hideError();
@@ -803,7 +400,6 @@
 
             return allFilled && isNumeric;
         }
-
 
         function showError() {
             errorMessage.classList.add('show');
@@ -814,7 +410,6 @@
             });
         }
 
-   
         function hideError() {
             errorMessage.classList.remove('show');
             inputs.forEach(input => {
@@ -822,21 +417,15 @@
             });
         }
 
-
         inputs.forEach((input, index) => {
-
             input.addEventListener('input', (e) => {
- 
                 e.target.value = e.target.value.replace(/[^0-9]/g, '');
                 
-  
                 if (e.target.value.length === 1 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                 }
 
-
                 validateInputs();
-
 
                 if (e.target.value.length > 0) {
                     input.classList.add('filled');
@@ -846,26 +435,21 @@
                 }
             });
 
-
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Backspace' && !input.value && index > 0) {
                     inputs[index - 1].focus();
                 }
-             
                 
                 if (e.key === 'Enter' && index === inputs.length - 1) {
                     trackResi();
                 }
             });
 
-
             input.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const pasteData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
-                
 
                 if (pasteData.length === 4) {
-
                     inputs.forEach((input, idx) => {
                         if (idx < pasteData.length) {
                             input.value = pasteData[idx];
@@ -877,7 +461,6 @@
                 }
             });
         });
-        
 
         function trackResi() {
             if (!validateInputs()) {
@@ -889,25 +472,22 @@
             inputs.forEach(input => resi += input.value);
 
             if (resi.length === 4 && /^\d+$/.test(resi)) {
-                window.location.href = `/tracking-detail/${resi}`;
+                // FIXED: Gunakan route Laravel yang benar
+                window.location.href = "{{ url('/tracking') }}/" + resi;
             } else {
                 showError();
             }
         }
 
-
         trackingBtn.addEventListener('click', trackResi);
-
 
         window.addEventListener('load', () => {
             inputs[0].focus();
         });
 
-
         inputs.forEach(input => {
             input.addEventListener('blur', validateInputs);
         });
     </script>
-
 </body>
 </html>

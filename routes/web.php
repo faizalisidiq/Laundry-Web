@@ -7,15 +7,17 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TrackingController; 
 
 // ===========================
 // ROUTE UNTUK USERSIDE (Frontend)
 // ===========================
 Route::prefix('/')->group(function () {
-    Route::get('/', function () {
-        return view('user.tracking');
-    })->name('user.tracking');
-
+    // Halaman tracking input resi
+    Route::get('/', [TrackingController::class, 'index'])->name('user.tracking');
+    Route::get('/tracking/{resi}', [TrackingController::class, 'show'])->name('tracking.show');
+    
+    // Lokasi (static page)
     Route::get('/lokasi', function () {
         return view('user.lokasi');
     })->name('user.lokasi');

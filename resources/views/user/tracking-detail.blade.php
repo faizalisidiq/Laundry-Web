@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tracking Dashboard | Berlian Laundry</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -270,34 +269,6 @@
             color: #F5A83B;
         }
 
-        .location-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #F5A83B 0%, #FFB74D 100%);
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 8px 20px rgba(245, 168, 59, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .location-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(245, 168, 59, 0.4);
-        }
-
-        .location-btn i {
-            font-size: 20px;
-        }
-
         footer {
             background: linear-gradient(135deg, #2C2C2C 0%, #1A1A1A 100%);
             color: white;
@@ -307,12 +278,6 @@
             line-height: 1.7;
             z-index: 1;
             border-top: 3px solid rgba(255, 154, 86, 0.3);
-        }
-
-        footer a {
-            color: #FF9A56;
-            text-decoration: none;
-            font-weight: 600;
         }
 
         @keyframes slideUp {
@@ -352,67 +317,23 @@
             .container {
                 padding: 60px 15px 30px;
             }
-
             .dashboard-card {
                 padding: 25px;
             }
-
             .header-logo img {
                 height: 50px;
             }
-
             .header-logo h1 {
                 font-size: 18px;
             }
-
-            .logout-btn {
-                top: 15px;
-                right: 15px;
-                padding: 10px 22px;
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .dashboard-card {
-                padding: 20px;
-            }
-
-            .order-info {
-                padding: 18px;
-            }
-
-            .info-label, .info-value {
-                font-size: 13px;
-            }
-
-            .status-timeline {
-                padding-left: 45px;
-            }
-
-            .status-icon {
-                width: 40px;
-                height: 40px;
-                left: -45px;
-                font-size: 18px;
-            }
-
-            .status-name {
-                font-size: 15px;
-            }
-
-            .status-desc {
-                font-size: 12px;
-            }
         }
     </style>
-    
-    <!-- Font Awesome untuk ikon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <a href="{{ route('user.tracking') }}" class="logout-btn">Logout</a>
+    <a href="{{ route('user.tracking') }}" class="logout-btn">
+        <i class="fas fa-arrow-left"></i> Kembali
+    </a>
 
     <div class="container">
         <div class="dashboard-card">
@@ -424,27 +345,41 @@
             <div class="order-info">
                 <div class="info-row">
                     <span class="info-label">No. Resi</span>
-                    <span class="info-value">{{ $resi }}</span> <!-- INI AKAN MENAMPILKAN RESI DYNAMIC -->
+                    <span class="info-value">#{{ $order->resi }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Nama Pelanggan</span>
+                    <span class="info-value">{{ $order->customer_name }}</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Tanggal Masuk</span>
-                    <span class="info-value">23 Oktober 2025</span>
+                    <span class="info-value">{{ \Carbon\Carbon::parse($order->tanggal_pemesanan)->format('d M Y, H:i') }} WIT</span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Jenis Layanan</span>
-                    <span class="info-value">Reguler</span>
+                    <span class="info-label">Layanan</span>
+                    <span class="info-value" style="text-align: right; max-width: 200px;">
+                        @foreach($order->od as $detail)
+                            {{ $detail->layanan->nama_layanan }}@if(!$loop->last), @endif
+                        @endforeach
+                    </span>
                 </div>
                 <div class="info-row">
-                    <span class="info-label">Berat</span>
-                    <span class="info-value">5 Kg</span>
+                    <span class="info-label">Total Berat</span>
+                    <span class="info-value">{{ number_format($order->od->sum('berat'), 1) }} Kg</span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Total Biaya</span>
-                    <span class="info-value">Rp 35.000</span>
+                    <span class="info-value">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status Pembayaran</span>
+                    <span class="info-value" style="color: {{ $order->payment_status == 'Lunas' ? '#4CAF50' : '#ff6b6b' }}">
+                        {{ $order->payment_status }}
+                    </span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Estimasi Selesai</span>
-                    <span class="info-value">25 Oktober 2025</span>
+                    <span class="info-value">{{ \Carbon\Carbon::parse($order->tanggal_selesai)->format('d M Y, H:i') }} WIT</span>
                 </div>
             </div>
 
@@ -452,62 +387,65 @@
                 <h2 class="status-title">Status Pesanan</h2>
                 
                 <div class="status-timeline">
-                    <div class="status-item">
-                        <div class="status-icon completed">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="status-content">
-                            <div class="status-name">Menunggu</div>
-                            <div class="status-desc">Pesanan telah kami terima</div>
-                            <div class="status-time">23 Okt 2025, 09:30 WIT</div>
-                        </div>
-                    </div>
+                    @php
+                        $statuses = ['Menunggu', 'Diproses', 'Selesai', 'Diambil'];
+                        $currentStatus = $order->status;
+                        $currentIndex = array_search($currentStatus, $statuses);
+                        
+                        $icons = [
+                            'Menunggu' => 'fa-clock',
+                            'Diproses' => 'fa-spinner',
+                            'Selesai' => 'fa-check-circle',
+                            'Diambil' => 'fa-truck'
+                        ];
+                        
+                        $descriptions = [
+                            'Menunggu' => 'Pesanan telah kami terima dan siap diproses',
+                            'Diproses' => 'Pakaian sedang dalam proses pencucian',
+                            'Selesai' => 'Pesanan telah selesai dan siap diambil',
+                            'Diambil' => 'Pesanan telah diambil oleh pelanggan'
+                        ];
+                        
+                        // Timestamps untuk setiap status
+                        $timestamps = [
+                            'Menunggu' => $order->tanggal_pemesanan,
+                            'Diproses' => ($currentIndex >= 1) ? $order->updated_at : null,
+                            'Selesai' => ($currentIndex >= 2) ? $order->tanggal_selesai : null,
+                            'Diambil' => ($currentIndex >= 3) ? $order->updated_at : null,
+                        ];
+                    @endphp
 
+                    @foreach($statuses as $index => $status)
                     <div class="status-item">
-                        <div class="status-icon in-progress">
-                            <i class="fas fa-spinner"></i>
+                        <div class="status-icon {{ $index < $currentIndex ? 'completed' : ($index == $currentIndex ? 'in-progress' : 'pending') }}">
+                            <i class="fas {{ $icons[$status] }}"></i>
                         </div>
                         <div class="status-content">
-                            <div class="status-name">Diproses Pencucian</div>
-                            <div class="status-desc">Pakaian Sedang Di Proses</div>
-                            <div class="status-time">23 Okt 2025, 14:30 WIT</div>
+                            <div class="status-name">{{ $status }}</div>
+                            <div class="status-desc">{{ $descriptions[$status] }}</div>
+                            <div class="status-time">
+                                @if($index <= $currentIndex && isset($timestamps[$status]))
+                                    {{ \Carbon\Carbon::parse($timestamps[$status])->format('d M Y, H:i') }} WIT
+                                @else
+                                    -
+                                @endif
+                            </div>
                         </div>
                     </div>
-
-                    <div class="status-item">
-                        <div class="status-icon pending">
-                            <i class="fas fa-box"></i>
-                        </div>
-                        <div class="status-content">
-                            <div class="status-name">Selesai</div>
-                            <div class="status-desc">Menunggu proses sebelumnya</div>
-                            <div class="status-time">-</div>
-                        </div>
-                    </div>
-
-                    <div class="status-item">
-                        <div class="status-icon pending">
-                            <i class="fas fa-truck"></i>
-                        </div>
-                        <div class="status-content">
-                            <div class="status-name">Diambil</div>
-                            <div class="status-desc">Pesanan siap diambil/diantar</div>
-                            <div class="status-time">-</div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
 
             <div class="contact-section">
-                <div class="contact-label">Contact Kami</div>
-                <div class="contact-value">+62 81343 047741</div>
+                <div class="contact-label">Hubungi Kami</div>
+                <div class="contact-value">+62 813-4304-7741</div>
             </div>
         </div>
     </div>
 
     <footer>
         © 2025 Berlian Laundry. Semua hak dilindungi.<br>
-        Hubungi kami: +62 xxx-xxxx-xxxx | <a href="mailto:berlian@laundry.com">BerlianLaundry.com</a>
+        Jl. R.E. Martadinata, Nabarua, Distrik Nabire, Kabupaten Nabire, Papua Tengah
     </footer>
 
     <script>
