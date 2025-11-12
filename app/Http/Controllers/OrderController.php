@@ -72,8 +72,11 @@ class OrderController extends Controller
         DB::beginTransaction();
 
         try {
-            // Generate resi unik
-            $resi = str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
+            do {
+                // Generate angka acak 4 digit (0001–9999)
+                $resi = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
+            } while (Order::where('resi', $resi)->exists());
+
 
             // Hitung total harga dan tanggal selesai
             $totalHarga = 0;
