@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Layanan;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -19,10 +17,10 @@ class DashboardController extends Controller
         $totalPendapatan = Order::where('status', 'Diambil')->sum('total_harga');
 
         // Pesanan berdasarkan status
-        $pesananMenunggu = Order::menunggu()->count();
-        $pesananDiproses = Order::diproses()->count();
-        $pesananSelesai = Order::selesai()->count();
-        $pesananDiambil = Order::diambil()->count();
+        $pesananMenunggu = Order::where('status', 'Menunggu')->count();
+        $pesananDiproses = Order::where('status', 'Diproses')->count();
+        $pesananSelesai = Order::where('status', 'Selesai')->count();
+        $pesananDiambil = Order::where('status', 'Diambil')->count();
 
         // Aktivitas terbaru (5 pesanan terakhir)
         $aktivitasTerbaru = Order::with('user')

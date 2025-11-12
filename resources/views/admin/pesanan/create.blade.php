@@ -39,7 +39,7 @@
       padding: 20px;
     }
     .navbar {
-      margin-left: 240px;
+      margin-left: 0px;
       background: #ffffff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
@@ -50,23 +50,16 @@
       margin-bottom: 10px;
       border: 1px solid #dee2e6;
     }
+    .payment-summary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
   </style>
 </head>
 <body>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h4 class="text-center text-white mb-4 fw-bold">Laundry Admin</h4>
-    <a href="{{ route('dashboard') }}">🏠 Dashboard</a>
-    <a href="{{ route('layanan.index') }}">🧺 Layanan</a>
-    <a href="{{ route('pesanan.index') }}" class="active">📋 Pesanan</a>
-    <a href="#">👥 Pelanggan</a>
-    <a href="#">⚙️ Pengaturan</a>
-    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-      @csrf
-      <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">🚪 Logout</a>
-    </form>
-  </div>
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light">
@@ -200,18 +193,70 @@
 
                 <hr class="my-4">
 
-                <!-- Total -->
+                <!-- Pembayaran -->
+                <h6 class="fw-bold mb-3">💰 Informasi Pembayaran</h6>
                 <div class="row">
-                  <div class="col-md-8"></div>
-                  <div class="col-md-4">
-                    <div class="bg-light p-3 rounded">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label for="payment_status" class="form-label fw-bold">Status Pembayaran <span class="text-danger">*</span></label>
+                      <select name="payment_status" 
+                              id="payment_status" 
+                              class="form-select @error('payment_status') is-invalid @enderror" 
+                              required
+                              onchange="handlePaymentStatusChange()">
+                        <option value="Belum Lunas" {{ old('payment_status') == 'Belum Lunas' ? 'selected' : '' }}>Belum Lunas</option>
+                        <option value="Lunas" {{ old('payment_status') == 'Lunas' ? 'selected' : '' }}>Lunas</option>
+                      </select>
+                      @error('payment_status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                      @enderror
+                      <small class="text-muted">Pilih status pembayaran pesanan</small>
+                    </div>
+
+                    <div class="mb-3" id="paidAmountContainer">
+                      <label for="paid_amount" class="form-label fw-bold">Jumlah Dibayar</label>
+                      <div class="input-group">
+                        <span class="input-group-text">Rp</span>
+                        <input type="number" 
+                               class="form-control @error('paid_amount') is-invalid @enderror" 
+                               id="paid_amount" 
+                               name="paid_amount" 
+                               value="{{ old('paid_amount', 0) }}"
+                               min="0"
+                               step="0.01"
+                               onchange="calculatePaymentDisplay()">
+                        @error('paid_amount')
+                          <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                      </div>
+                      <small class="text-muted">Opsional: Masukkan jumlah yang sudah dibayar</small>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="payment-summary">
                       <div class="d-flex justify-content-between mb-2">
-                        <strong>Total Harga:</strong>
-                        <strong class="text-primary fs-5" id="totalHarga">Rp 0</strong>
+                        <span>Total Tagihan:</span>
+                        <strong class="fs-5" id="totalHarga">Rp 0</strong>
+                      </div>
+                      <div class="d-flex justify-content-between mb-2">
+                        <span>Dibayar:</span>
+                        <strong id="displayPaidAmount">Rp 0</strong>
+                      </div>
+                      <hr style="border-color: rgba(255,255,255,0.3);">
+                      <div class="d-flex justify-content-between">
+                        <span>Sisa Tagihan:</span>
+                        <strong class="fs-5" id="sisaTagihan">Rp 0</strong>
+                      </div>
+                      <div class="mt-3">
+                        <span class="badge bg-danger" id="paymentStatusBadge" style="font-size: 14px; padding: 8px 15px;">
+                          Belum Lunas
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <hr class="my-4">
 
                 <div class="d-flex gap-2 mt-4">
                   <button type="submit" class="btn btn-primary">
@@ -330,7 +375,64 @@
       });
       
       document.getElementById('totalHarga').textContent = 'Rp ' + total.toLocaleString('id-ID');
+      
+      // Auto update paid amount if Lunas is selected
+      const paymentStatus = document.getElementById('payment_status').value;
+      if (paymentStatus === 'Lunas') {
+        document.getElementById('paid_amount').value = total;
+      }
+      
+      calculatePaymentDisplay();
     }
+
+    function handlePaymentStatusChange() {
+      const paymentStatus = document.getElementById('payment_status').value;
+      const paidAmountInput = document.getElementById('paid_amount');
+      const totalText = document.getElementById('totalHarga').textContent;
+      const total = parseFloat(totalText.replace(/[^0-9]/g, ''));
+      
+      if (paymentStatus === 'Lunas') {
+        paidAmountInput.value = total;
+      } else {
+        paidAmountInput.value = 0;
+      }
+      
+      calculatePaymentDisplay();
+    }
+
+    function calculatePaymentDisplay() {
+      const totalText = document.getElementById('totalHarga').textContent;
+      const total = parseFloat(totalText.replace(/[^0-9]/g, ''));
+      const paidAmount = parseFloat(document.getElementById('paid_amount').value || 0);
+      const sisa = total - paidAmount;
+      const paymentStatus = document.getElementById('payment_status').value;
+      
+      // Update display
+      document.getElementById('displayPaidAmount').textContent = 'Rp ' + paidAmount.toLocaleString('id-ID');
+      document.getElementById('sisaTagihan').textContent = 'Rp ' + sisa.toLocaleString('id-ID');
+      
+      // Update badge based on dropdown selection
+      const badge = document.getElementById('paymentStatusBadge');
+      if (paymentStatus === 'Lunas') {
+        badge.textContent = 'Lunas ✅';
+        badge.className = 'badge bg-success';
+      } else {
+        badge.textContent = 'Belum Lunas';
+        badge.className = 'badge bg-danger';
+      }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add event listener to payment status dropdown
+      document.getElementById('payment_status').addEventListener('change', handlePaymentStatusChange);
+      
+      // Add event listener to paid_amount input
+      document.getElementById('paid_amount').addEventListener('input', calculatePaymentDisplay);
+      
+      // Initialize payment display
+      calculatePaymentDisplay();
+    });
   </script>
 </body>
 </html>

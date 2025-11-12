@@ -39,7 +39,7 @@
       padding: 20px;
     }
     .navbar {
-      margin-left: 240px;
+      margin-left: 0px;
       background: #ffffff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
@@ -47,19 +47,7 @@
 </head>
 <body>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h4 class="text-center text-white mb-4 fw-bold">Laundry Admin</h4>
-    <a href="{{ route('dashboard') }}">🏠 Dashboard</a>
-    <a href="{{ route('layanan.index') }}" class="active">🧺 Layanan</a>
-    <a href="#">📋 Pesanan</a>
-    <a href="#">👥 Pelanggan</a>
-    <a href="#">⚙️ Pengaturan</a>
-    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-      @csrf
-      <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">🚪 Logout</a>
-    </form>
-  </div>
+
 
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light">

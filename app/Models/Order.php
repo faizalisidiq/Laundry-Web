@@ -18,12 +18,19 @@ class Order extends Model
         'total_harga',
         'tanggal_pemesanan',
         'tanggal_selesai',
+        'wa_sent',
+        'wa_sent_at',
+        'payment_status',
+        'paid_amount',
     ];
 
     protected $casts = [
         'tanggal_pemesanan' => 'datetime',
         'tanggal_selesai' => 'datetime',
+        'wa_sent_at' => 'datetime',
+        'wa_sent' => 'boolean',
         'total_harga' => 'decimal:2',
+        'paid_amount' => 'decimal:2',
     ];
 
     public function user()
@@ -36,6 +43,15 @@ class Order extends Model
     {
         return $this->hasMany(Od::class, 'order_id');
     }
+
+       /**
+     * Accessor untuk mendapatkan sisa tagihan
+     */
+    public function getSisaTagihanAttribute()
+    {
+        return $this->total_harga - $this->paid_amount;
+    }
+    
 
     // Scope untuk filter status
     public function scopeMenunggu($query)
