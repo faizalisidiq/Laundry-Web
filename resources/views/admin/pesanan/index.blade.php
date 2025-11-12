@@ -62,13 +62,19 @@
 nav[role="navigation"] svg {
   width: 14px !important;
   height: 14px !important;
+  padding top: 10px;
 }
 
 /* Opsional: atur font dan jarak tombol pagination */
 nav[role="navigation"] span,
 nav[role="navigation"] a {
   font-size: 14px !important;
+  height: 14px !important;
   padding: 4px 8px !important;
+}
+
+.text-sm.text-gray-700.leading-5.dark\:text-gray-400 {
+    display: none !important;
 }
   </style>
 </head>
@@ -245,7 +251,7 @@ nav[role="navigation"] a {
 
           <!-- Pagination -->
           <div class="d-flex justify-content-end mt-3">
-            {{ $orders->links() }}
+            {{ $orders->links('vendor.pagination.simple-numbers') }}
           </div>
         </div>
       </div>

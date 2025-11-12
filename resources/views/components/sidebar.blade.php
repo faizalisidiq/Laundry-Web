@@ -31,11 +31,11 @@
         </a>
     @endif
 
-    @if (auth()->user()->isAdmin())
+    <!-- @if (auth()->user()->isAdmin())
         <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
         🔐 Kelola Role
         </a>
-    @endif
+    @endif -->
 
   <hr class="my-2" style="border-color: rgba(255,255,255,0.2);">
 
