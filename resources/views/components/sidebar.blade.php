@@ -1,30 +1,40 @@
 <div class="sidebar">
   <h4 class="text-center text-white mb-4 fw-bold">🧺 Laundry System</h4>
-  
+
 <!-- Sidebar -->
 <div class="sidebar">
   <h4 class="text-center text-white mb-4 fw-bold">Laundry Admin</h4>
+
   <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
     🏠 Dashboard
   </a>
-  <a href="{{ route('layanan.index') }}" class="{{ request()->routeIs('layanan.*') ? 'active' : '' }}">
-    🧺 Layanan
-  </a>
+
+  @if (auth()->user()->isSuperAdmin())
+    <a href="{{ route('layanan.index') }}" class="{{ request()->routeIs('layanan.*') ? 'active' : '' }}">
+        🧺 Layanan
+    </a>
+  @endif
+
   <a href="{{ route('pesanan.index') }}" class="{{ request()->routeIs('pesanan.*') ? 'active' : '' }}">
     📋 Pesanan
   </a>
-  
+
   <hr class="my-2" style="border-color: rgba(255,255,255,0.2);">
-  
-  <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
-    👥 Kelola User
-  </a>
-  <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
-    🔐 Kelola Role
-  </a>
-  
+
+    @if (auth()->user()->isSuperAdmin())
+        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">
+            👥 Kelola User
+        </a>
+    @endif
+
+    @if (auth()->user()->isSuperAdmin())
+        <a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">
+        🔐 Kelola Role
+        </a>
+    @endif
+
   <hr class="my-2" style="border-color: rgba(255,255,255,0.2);">
-  
+
   <form action="{{ route('logout') }}" method="POST" class="d-inline">
     @csrf
     <a href="#" onclick="event.preventDefault(); this.closest('form').submit();">
@@ -33,8 +43,8 @@
   </form>
 </div>
 
-    
-  
+
+
   <!-- Info Role -->
   <div class="px-3 py-2 mt-4">
     <small class="text-white-50">Login sebagai:</small>
@@ -42,7 +52,7 @@
       {{ Auth::user()->role->display_name }}
     </div>
   </div>
-  
+
   <!-- Logout -->
   <form action="{{ route('logout') }}" method="POST" class="mt-auto">
     @csrf
