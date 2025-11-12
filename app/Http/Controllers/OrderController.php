@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Layanan;
-use App\Models\Od;  
+use App\Models\Od;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +15,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with('user', 'od.layanan')->latest(); 
+        $query = Order::with('user', 'od.layanan')->latest();
 
         // Filter berdasarkan status
         if ($request->has('status') && $request->status != '') {
@@ -33,7 +33,7 @@ class OrderController extends Controller
         }
 
         $orders = $query->paginate(10);
-        
+
         return view('admin.pesanan.index', compact('orders'));
     }
 
@@ -70,15 +70,10 @@ class OrderController extends Controller
         ]);
 
         DB::beginTransaction();
-        
+
         try {
             // Generate resi unik
-           do {
-            // Generate angka acak 4 digit (0001–9999)
-                $resi = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-            } while (Order::where('resi', $resi)->exists());
-
-
+            $resi = str_pad(Order::whereDate('created_at', today())->count() + 1, 4, '0', STR_PAD_LEFT);
 
             // Hitung total harga dan tanggal selesai
             $totalHarga = 0;
@@ -89,7 +84,7 @@ class OrderController extends Controller
                 $berat = $request->berat[$index];
                 $subtotal = $layanan->harga * $berat;
                 $totalHarga += $subtotal;
-                
+
                 if ($layanan->durasi_hari > $maxDurasi) {
                     $maxDurasi = $layanan->durasi_hari;
                 }
@@ -123,7 +118,7 @@ class OrderController extends Controller
                 $harga = $layanan->harga;
                 $subtotal = $harga * $berat;
 
-                Od::create([  
+                Od::create([
                     'order_id' => $order->id,
                     'layanan_id' => $layananId,
                     'berat' => $berat,
@@ -150,7 +145,7 @@ class OrderController extends Controller
      */
     public function show(Order $pesanan)
     {
-        $pesanan->load('user', 'od.layanan');  
+        $pesanan->load('user', 'od.layanan');
         return view('admin.pesanan.show', compact('pesanan'));
     }
 
@@ -159,7 +154,7 @@ class OrderController extends Controller
      */
     public function edit(Order $pesanan)
     {
-        $pesanan->load('od.layanan'); 
+        $pesanan->load('od.layanan');
         $layanans = Layanan::all();
         return view('admin.pesanan.edit', compact('pesanan', 'layanans'));
     }
@@ -182,7 +177,7 @@ class OrderController extends Controller
         ]);
 
         DB::beginTransaction();
-        
+
         try {
             // Hitung ulang total harga dan tanggal selesai
             $totalHarga = 0;
@@ -193,7 +188,7 @@ class OrderController extends Controller
                 $berat = $request->berat[$index];
                 $subtotal = $layanan->harga * $berat;
                 $totalHarga += $subtotal;
-                
+
                 if ($layanan->durasi_hari > $maxDurasi) {
                     $maxDurasi = $layanan->durasi_hari;
                 }
@@ -218,7 +213,7 @@ class OrderController extends Controller
             ]);
 
             // Hapus order details lama
-            $pesanan->od()->delete(); 
+            $pesanan->od()->delete();
 
             // Simpan order details baru
             foreach ($request->layanan_id as $index => $layananId) {
@@ -227,7 +222,7 @@ class OrderController extends Controller
                 $harga = $layanan->harga;
                 $subtotal = $harga * $berat;
 
-                Od::create([ 
+                Od::create([
                     'order_id' => $pesanan->id,
                     'layanan_id' => $layananId,
                     'berat' => $berat,
@@ -291,7 +286,7 @@ class OrderController extends Controller
 
             // Format nomor telepon (hapus +, spasi, strip)
             $phone = preg_replace('/[^0-9]/', '', $pesanan->phone);
-            
+
             // Jika diawali 0, ganti dengan 62
             if (substr($phone, 0, 1) === '0') {
                 $phone = '62' . substr($phone, 1);
@@ -311,8 +306,8 @@ class OrderController extends Controller
             // Hitung sisa tagihan
             $sisaTagihan = $pesanan->total_harga - $pesanan->paid_amount;
             $statusPembayaran = $pesanan->payment_status;
-            $statusText = $statusPembayaran === 'Lunas' 
-                ? "Lunas ✅" 
+            $statusText = $statusPembayaran === 'Lunas'
+                ? "Lunas ✅"
                 : "Belum Lunas (Sisa Tagihan : Rp" . number_format($sisaTagihan, 0, ',', '.') . ")";
 
             // Build pesan WhatsApp
