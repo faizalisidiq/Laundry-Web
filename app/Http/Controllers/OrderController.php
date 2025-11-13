@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Layanan;
 use App\Models\Od;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -374,5 +375,28 @@ class OrderController extends Controller
     {
         $pesanan->load('od.layanan');
         return view('admin.pesanan.print', compact('pesanan'));
+    }
+
+    /**
+     * Export PDF
+     */
+    public function ExportPdf(Request $request)
+    {
+        $bulan = $request->input('bulan', now()->month);
+        $tahun = $request->input('tahun', now()->year);
+
+        $orders = Order::where('status', 'Selesai')
+            ->with('od.layanan')
+            ->where('payment_status', 'Lunas')
+            ->whereMonth('tanggal_pemesanan', $bulan)
+            ->whereYear('tanggal_pemesanan', $tahun)
+            ->orderBy('tanggal_pemesanan', 'desc')
+            ->get();
+
+        $namaBulan = \Carbon\Carbon::create($tahun, $bulan)->locale('id')->translatedFormat('F Y');
+
+        $pdf = Pdf::loadView('admin.pesanan.pdf', compact('orders', 'namaBulan'));
+
+        return $pdf->download('Daftar_Pesanan_' . $namaBulan . '_export_at_' . now()->format('d-m-Y') . '_' . now()->format('H-i-s') . '.pdf');
     }
 }

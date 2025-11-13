@@ -7,7 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TrackingController; 
+use App\Http\Controllers\TrackingController;
 
 // ===========================
 // ROUTE UNTUK USERSIDE (Frontend)
@@ -16,7 +16,7 @@ Route::prefix('/')->group(function () {
     // Halaman tracking input resi
     Route::get('/', [TrackingController::class, 'index'])->name('user.tracking');
     Route::get('/tracking/{resi}', [TrackingController::class, 'show'])->name('tracking.show');
-    
+
     // Lokasi (static page)
     Route::get('/lokasi', function () {
         return view('user.lokasi');
@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
     // Pesanan - Admin dan Superadmin
     Route::middleware('role:admin,karyawan')->group(function () {
+        Route::get('/pesanan/export', [OrderController::class, 'ExportPdf'])->name('pesanan.export');
         Route::resource('pesanan', OrderController::class);
 
         // Additional routes untuk pesanan
