@@ -56,9 +56,9 @@
       background-color: #dc3545;
       color: white;
     }
-    
 
-    nav[role="navigation"] svg {
+
+nav[role="navigation"] svg {
   width: 16px !important;   /* default 20px */
   height: 16px !important;
 }
@@ -103,7 +103,7 @@ nav[role="navigation"] a {
   <!-- Main Content -->
   <div class="content">
     <div class="container-fluid mt-4">
-      
+
       <!-- Alert Messages -->
       @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -162,16 +162,24 @@ nav[role="navigation"] a {
             <table class="table table-hover align-middle">
               <thead class="table-light">
                 <tr>
-                  <th width="5%">No</th>
-                  <th width="10%">Resi</th>
-                  <th width="12%">Pelanggan</th>
-                  <th width="10%">Telepon</th>
-                  <th width="8%">Status</th>
-                  <th width="8%">Pembayaran</th>
-                  <th width="10%">Total Harga</th>
-                  <th width="10%">Tgl Pesan</th>
-                  <th width="8%">WA</th>
-                  <th width="19%" class="text-center">Aksi</th>
+                    <th width="5%">No</th>
+                    <th width="10%">Resi</th>
+                    <th width="12%">Pelanggan</th>
+                    <th width="10%">Telepon</th>
+                    <th width="8%">Status</th>
+                    <th width="8%">Pembayaran</th>
+                    <th width="10%">Total Harga</th>
+                    <th width="15%">
+                        <a href="{{ route('pesanan.index', array_merge(request()->all(), ['sort_by' => 'tanggal_pemesanan', 'sort_order' => request('sort_by') == 'tanggal_pemesanan' && request('sort_order') == 'asc' ? 'desc' : 'asc'])) }}"
+                            class="text-decoration-none text-dark">
+                            Tanggal Pesan
+                            @if(request('sort_by') == 'tanggal_pemesanan' || !request('sort_by'))
+                            <i class="bi bi-arrow-{{ request('sort_order') == 'asc' ? 'up' : 'down' }}"></i>
+                            @endif
+                        </a>
+                    </th>
+                    <th width="8%">WA</th>
+                    <th width="19%" class="text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -213,24 +221,26 @@ nav[role="navigation"] a {
                   </td>
                   <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                      <a href="{{ route('pesanan.show', $order->id) }}" 
+                      <a href="{{ route('pesanan.show', $order->id) }}"
                          class="btn btn-info" title="Detail">
                         <i class="bi bi-eye"></i>
                       </a>
-                      <a href="{{ route('pesanan.edit', $order->id) }}" 
-                         class="btn btn-warning" title="Edit">
-                        <i class="bi bi-pencil"></i>
-                      </a>
-                      <a href="{{ route('pesanan.print', $order->id) }}" 
+                      @if ($order->status != 'Diambil')
+                        <a href="{{ route('pesanan.edit', $order->id) }}"
+                            class="btn btn-warning" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}"
+                        class="btn btn-success" title="Kirim WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                        </a>
+                    @endif
+                      <a href="{{ route('pesanan.print', $order->id) }}"
                          class="btn btn-secondary" title="Cetak Struk" target="_blank">
                         <i class="bi bi-printer"></i>
                       </a>
-                      <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}" 
-                         class="btn btn-success" title="Kirim WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
-                      </a>
-                      <form action="{{ route('pesanan.destroy', $order->id) }}" 
-                            method="POST" 
+                      <form action="{{ route('pesanan.destroy', $order->id) }}"
+                            method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')"
                             class="d-inline">
                         @csrf
