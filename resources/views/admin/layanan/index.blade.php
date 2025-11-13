@@ -18,10 +18,14 @@
       position: fixed;
       left: 0;
       top: 0;
-      background: #0d6efd;
+      background: linear-gradient(135deg, #ff9d13ff 30%, #F5C16B 100%);
       color: #fff;
       padding-top: 1rem;
+      padding-bottom: 2rem;
       z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
     }
     .sidebar a {
       color: #ffffffcc;
