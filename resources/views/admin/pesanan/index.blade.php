@@ -27,7 +27,7 @@
       flex-direction: column;
       overflow-y: auto;
     }
-    
+
     .sidebar a {
       color: #ffffffcc;
       text-decoration: none;
@@ -159,6 +159,7 @@ nav[role="navigation"] a {
       <div class="card border-0 shadow-sm">
         <div class="card-body">
           <div class="table-responsive">
+            <a href="{{ route('pesanan.export') }}" class="btn btn-primary mb-3">Export PDF</a>
             <table class="table table-hover align-middle">
               <thead class="table-light">
                 <tr>
