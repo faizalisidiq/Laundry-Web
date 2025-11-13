@@ -51,9 +51,9 @@
       background-color: #dc3545;
       color: white;
     }
-    
 
-    nav[role="navigation"] svg {
+
+nav[role="navigation"] svg {
   width: 16px !important;   /* default 20px */
   height: 16px !important;
 }
@@ -98,7 +98,7 @@ nav[role="navigation"] a {
   <!-- Main Content -->
   <div class="content">
     <div class="container-fluid mt-4">
-      
+
       <!-- Alert Messages -->
       @if(session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -208,24 +208,26 @@ nav[role="navigation"] a {
                   </td>
                   <td class="text-center">
                     <div class="btn-group btn-group-sm" role="group">
-                      <a href="{{ route('pesanan.show', $order->id) }}" 
+                      <a href="{{ route('pesanan.show', $order->id) }}"
                          class="btn btn-info" title="Detail">
                         <i class="bi bi-eye"></i>
                       </a>
-                      <a href="{{ route('pesanan.edit', $order->id) }}" 
-                         class="btn btn-warning" title="Edit">
-                        <i class="bi bi-pencil"></i>
-                      </a>
-                      <a href="{{ route('pesanan.print', $order->id) }}" 
+                      @if ($order->status != 'Diambil')
+                        <a href="{{ route('pesanan.edit', $order->id) }}"
+                            class="btn btn-warning" title="Edit">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}"
+                        class="btn btn-success" title="Kirim WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                        </a>
+                    @endif
+                      <a href="{{ route('pesanan.print', $order->id) }}"
                          class="btn btn-secondary" title="Cetak Struk" target="_blank">
                         <i class="bi bi-printer"></i>
                       </a>
-                      <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}" 
-                         class="btn btn-success" title="Kirim WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
-                      </a>
-                      <form action="{{ route('pesanan.destroy', $order->id) }}" 
-                            method="POST" 
+                      <form action="{{ route('pesanan.destroy', $order->id) }}"
+                            method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')"
                             class="d-inline">
                         @csrf
