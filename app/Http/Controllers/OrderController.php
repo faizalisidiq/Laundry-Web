@@ -34,6 +34,21 @@ class OrderController extends Controller
             });
         }
 
+        // Sorting berdasarkan tanggal pemesanan
+        $sortBy = $request->input('sort_by', 'tanggal_pemesanan');
+        $sortOrder = $request->input('sort_order', 'desc');
+
+        // Validasi input sorting
+        if (!in_array($sortBy, ['tanggal_pemesanan'])) {
+            $sortBy = 'tanggal_pemesanan';
+        }
+
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
+
+        $query->orderBy($sortBy, $sortOrder);
+
         // ✅ Pagination dengan mempertahankan parameter filter
         $perPage = $request->input('per_page', 10);
         $orders = $query->paginate($perPage)->appends($request->except('page'));

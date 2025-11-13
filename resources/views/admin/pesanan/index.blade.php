@@ -157,16 +157,24 @@ nav[role="navigation"] a {
             <table class="table table-hover align-middle">
               <thead class="table-light">
                 <tr>
-                  <th width="5%">No</th>
-                  <th width="10%">Resi</th>
-                  <th width="12%">Pelanggan</th>
-                  <th width="10%">Telepon</th>
-                  <th width="8%">Status</th>
-                  <th width="8%">Pembayaran</th>
-                  <th width="10%">Total Harga</th>
-                  <th width="10%">Tgl Pesan</th>
-                  <th width="8%">WA</th>
-                  <th width="19%" class="text-center">Aksi</th>
+                    <th width="5%">No</th>
+                    <th width="10%">Resi</th>
+                    <th width="12%">Pelanggan</th>
+                    <th width="10%">Telepon</th>
+                    <th width="8%">Status</th>
+                    <th width="8%">Pembayaran</th>
+                    <th width="10%">Total Harga</th>
+                    <th width="15%">
+                        <a href="{{ route('pesanan.index', array_merge(request()->all(), ['sort_by' => 'tanggal_pemesanan', 'sort_order' => request('sort_by') == 'tanggal_pemesanan' && request('sort_order') == 'asc' ? 'desc' : 'asc'])) }}"
+                            class="text-decoration-none text-dark">
+                            Tanggal Pesan
+                            @if(request('sort_by') == 'tanggal_pemesanan' || !request('sort_by'))
+                            <i class="bi bi-arrow-{{ request('sort_order') == 'asc' ? 'up' : 'down' }}"></i>
+                            @endif
+                        </a>
+                    </th>
+                    <th width="8%">WA</th>
+                    <th width="19%" class="text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
