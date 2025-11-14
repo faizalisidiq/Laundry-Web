@@ -544,9 +544,8 @@
         <div class="bubble"></div>
     </div>
 
-    <footer>
-        © 2025 Berlian Laundry. Semua hak dilindungi.<br>
-        Hubungi kami: +62 xxx-xxx-xxxx | <a href="mailto:berlian@laundry.com">berlian@laundry.com</a>
+     <footer>
+        © 2025 Berlian Laundry. Semua hak dilindungi.
     </footer>
 </body>
 </html>

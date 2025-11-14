@@ -187,10 +187,10 @@ nav[role="navigation"] a {
         </select>
       </div>
       <div class="col-md-3">
-        <button type="submit" class="btn btn-success w-100">
-          <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
+        <button type="submit" class="btn btn-danger w-100">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
         </button>
-      </div>
+    </div>
     </form>
   </div>
 </div>
