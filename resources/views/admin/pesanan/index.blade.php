@@ -155,11 +155,51 @@ nav[role="navigation"] a {
         </div>
       </div>
 
+      <!-- Tambahkan ini SEBELUM tabel, ganti form export yang lama -->
+<div class="card border-0 shadow-sm mb-3">
+  <div class="card-body">
+    <form action="{{ route('pesanan.export') }}" method="GET" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Bulan</label>
+        <select name="bulan" class="form-select" required>
+          @for($i = 1; $i <= 12; $i++)
+            <option value="{{ $i }}" {{ $i == now()->month ? 'selected' : '' }}>
+              {{ \Carbon\Carbon::create()->month($i)->locale('id')->translatedFormat('F') }}
+            </option>
+          @endfor
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Tahun</label>
+        <select name="tahun" class="form-select" required>
+          @for($year = now()->year; $year >= now()->year - 5; $year--)
+            <option value="{{ $year }}" {{ $year == now()->year ? 'selected' : '' }}>
+              {{ $year }}
+            </option>
+          @endfor
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-bold">Status</label>
+        <select name="filter_status" class="form-select">
+          <option value="all">Semua Status</option>
+          <option value="selesai" selected>Selesai & Lunas</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-success w-100">
+          <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+      
+
       <!-- Table -->
       <div class="card border-0 shadow-sm">
         <div class="card-body">
           <div class="table-responsive">
-            <a href="{{ route('pesanan.export') }}" class="btn btn-primary mb-3">Export PDF</a>
             <table class="table table-hover align-middle">
               <thead class="table-light">
                 <tr>

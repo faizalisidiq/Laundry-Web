@@ -377,26 +377,76 @@ class OrderController extends Controller
         return view('admin.pesanan.print', compact('pesanan'));
     }
 
+
     /**
      * Export PDF
      */
-    public function ExportPdf(Request $request)
-    {
-        $bulan = $request->input('bulan', now()->month);
-        $tahun = $request->input('tahun', now()->year);
+    public function exportPdf(Request $request)
+{
+    try {
+        // Validasi input
+        $request->validate([
+            'bulan' => 'required|integer|between:1,12',
+            'tahun' => 'required|integer|min:2020',
+            'filter_status' => 'required|in:all,selesai',
+        ]);
 
-        $orders = Order::where('status', 'Selesai')
-            ->with('od.layanan')
-            ->where('payment_status', 'Lunas')
-            ->whereMonth('tanggal_pemesanan', $bulan)
+        $bulan = $request->input('bulan');
+        $tahun = $request->input('tahun');
+        $filterStatus = $request->input('filter_status', 'selesai');
+
+        // Query builder
+        $query = Order::whereMonth('tanggal_pemesanan', $bulan)
             ->whereYear('tanggal_pemesanan', $tahun)
-            ->orderBy('tanggal_pemesanan', 'desc')
-            ->get();
+            ->with('od.layanan');
 
-        $namaBulan = \Carbon\Carbon::create($tahun, $bulan)->locale('id')->translatedFormat('F Y');
+        // Filter berdasarkan pilihan status
+        if ($filterStatus === 'selesai') {
+            // Hanya ambil yang Selesai ATAU Diambil DAN sudah Lunas
+            $query->whereIn('status', ['Selesai', 'Diambil'])
+                  ->where('payment_status', 'Lunas');
+        }
 
-        $pdf = Pdf::loadView('admin.pesanan.pdf', compact('orders', 'namaBulan'));
+        // Ambil data dan urutkan
+        $orders = $query->orderBy('tanggal_pemesanan', 'desc')->get();
 
-        return $pdf->download('Daftar_Pesanan_' . $namaBulan . '_export_at_' . now()->format('d-m-Y') . '_' . now()->format('H-i-s') . '.pdf');
+        // Jika tidak ada data, kembalikan dengan pesan
+        if ($orders->isEmpty()) {
+            $namaBulan = \Carbon\Carbon::create($tahun, $bulan)
+                ->locale('id')
+                ->translatedFormat('F Y');
+            
+            return redirect()->back()
+                ->with('error', "Tidak ada data pesanan untuk periode {$namaBulan}");
+        }
+
+        // Nama bulan dalam bahasa Indonesia
+        $namaBulan = \Carbon\Carbon::create($tahun, $bulan)
+            ->locale('id')
+            ->translatedFormat('F Y');
+
+        // Load view menjadi PDF
+        $pdf = Pdf::loadView('admin.pesanan.pdf', [
+            'orders' => $orders,
+            'namaBulan' => $namaBulan,
+            'filterStatus' => $filterStatus,
+        ])
+        ->setPaper('A4', 'portrait')
+        ->setOption('margin-top', 10)
+        ->setOption('margin-bottom', 10)
+        ->setOption('margin-left', 10)
+        ->setOption('margin-right', 10);
+
+        // Generate filename
+        $statusLabel = $filterStatus === 'selesai' ? 'Selesai_Lunas' : 'Semua';
+        $filename = 'Rekap_Pesanan_' . $statusLabel . '_' . str_replace(' ', '_', $namaBulan) . '_' . now()->format('d-m-Y_His') . '.pdf';
+        
+        // Download file
+        return $pdf->download($filename);
+        
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'Gagal mengekspor PDF: ' . $e->getMessage());
     }
+}
 }
