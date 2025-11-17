@@ -31,6 +31,34 @@
             z-index: 0;
         }
 
+        .btn-back {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid #ff9a35ff;
+            color: #ff9a35ff;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 25px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(255, 154, 86, 0.2);
+        }
+
+        .btn-back:hover {
+            background: #ff9a35ff;
+            color: #fff;
+            transform: translateX(-5px);
+            box-shadow: 0 6px 20px rgba(255, 154, 86, 0.4);
+        }
+
         .login-card {
             background: rgba(255,255,255,0.9);
             border-radius: 20px;
@@ -153,12 +181,12 @@
         .bubble {
             position: absolute;
             border-radius: 50%;
-            background: radial-gradient(circle at 40% 40%, 
-                rgba(24, 186, 255, 0.5), 
+            background: radial-gradient(circle at 40% 40%,
+                rgba(24, 186, 255, 0.5),
                 rgba(255, 189, 145, 0.3));
             opacity: 0.7;
             animation: floatBubble linear infinite;
-            box-shadow: 
+            box-shadow:
                 inset 0 10px 20px rgba(255, 255, 255, 0.3),
                 0 4px 15px rgba(52, 152, 219, 0.2);
         }
@@ -268,7 +296,7 @@
             animation-duration: 10.5s;
             animation-delay: 4.5s;
         }
-        
+
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -288,7 +316,9 @@
     </style>
 </head>
 <body>
-
+    <a href="{{ route('user.tracking') }}" class="btn-back justify-start">
+        ← Kembali ke Beranda
+    </a>
     <div class="login-card">
         <div class="login-header">
             <img src="{{ asset('images/logo-berlian.png') }}" alt="Logo Berlian Laundry">
