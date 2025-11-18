@@ -260,38 +260,62 @@ nav[role="navigation"] a {
                       </span>
                     @endif
                   </td>
-                  <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group">
-                      <a href="{{ route('pesanan.show', $order->id) }}"
-                         class="btn btn-info" title="Detail">
-                        <i class="bi bi-eye"></i>
-                      </a>
-                      @if ($order->status != 'Diambil')
-                        <a href="{{ route('pesanan.edit', $order->id) }}"
+                  <!-- Bagian Tombol Aksi di Tabel - GANTI INI -->
+                    <td class="text-center">
+                      <div class="btn-group btn-group-sm" role="group">
+                        <!-- Detail -->
+                        <a href="{{ route('pesanan.show', $order->id) }}"
+                          class="btn btn-info" title="Detail">
+                          <i class="bi bi-eye"></i>
+                        </a>
+                        
+                        @if ($order->status != 'Diambil')
+                          <!-- Edit -->
+                          <a href="{{ route('pesanan.edit', $order->id) }}"
                             class="btn btn-warning" title="Edit">
                             <i class="bi bi-pencil"></i>
+                          </a>
+                          
+                          <!-- WhatsApp - Kondisional berdasarkan status -->
+                          @if(in_array($order->status, ['Menunggu', 'Diproses']))
+                            <!-- Tombol WA Awal (hijau) -->
+                            <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}"
+                              class="btn btn-success" 
+                              title="Kirim Notif Pesanan Diterima">
+                              <i class="bi bi-whatsapp"></i> Awal
+                            </a>
+                          @endif
+                          
+                          @if($order->status == 'Selesai')
+                            <!-- Tombol WA Selesai (hijau tua) -->
+                            <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}"
+                              class="btn btn-success" 
+                              style="background-color: #128C7E; border-color: #128C7E;"
+                              title="Kirim Notif Pesanan Selesai">
+                              <i class="bi bi-whatsapp"></i> Selesai
+                            </a>
+                          @endif
+                        @endif
+                        
+                        <!-- Print -->
+                        <a href="{{ route('pesanan.print', $order->id) }}"
+                          class="btn btn-secondary" title="Cetak Struk" target="_blank">
+                          <i class="bi bi-printer"></i>
                         </a>
-                        <a href="{{ route('pesanan.sendWhatsApp', $order->id) }}"
-                        class="btn btn-success" title="Kirim WhatsApp">
-                        <i class="bi bi-whatsapp"></i>
-                        </a>
-                    @endif
-                      <a href="{{ route('pesanan.print', $order->id) }}"
-                         class="btn btn-secondary" title="Cetak Struk" target="_blank">
-                        <i class="bi bi-printer"></i>
-                      </a>
-                      <form action="{{ route('pesanan.destroy', $order->id) }}"
-                            method="POST"
-                            onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')"
-                            class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" title="Hapus">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </form>
-                    </div>
-                  </td>
+                        
+                        <!-- Delete -->
+                        <form action="{{ route('pesanan.destroy', $order->id) }}"
+                              method="POST"
+                              onsubmit="return confirm('Yakin ingin menghapus pesanan ini?')"
+                              class="d-inline">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger" title="Hapus">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+                      </div>
+                    </td>
                 </tr>
                 @empty
                 <tr>

@@ -300,73 +300,187 @@ class OrderController extends Controller
     /**
      * Kirim WhatsApp
      */
-    public function sendWhatsApp(Order $pesanan)
-    {
-        try {
-            $pesanan->load('od.layanan');
+  /**
+ * Kirim WhatsApp - DUAL MESSAGE (Awal & Selesai)
+ */
+public function sendWhatsApp(Order $pesanan)
+{
+    try {
+        $pesanan->load('od.layanan');
 
-            // Format nomor telepon (hapus +, spasi, strip)
-            $phone = preg_replace('/[^0-9]/', '', $pesanan->phone);
-
-            // Jika diawali 0, ganti dengan 62
-            if (substr($phone, 0, 1) === '0') {
-                $phone = '62' . substr($phone, 1);
-            }
-
-            // Jika tidak diawali 62, tambahkan 62
-            if (substr($phone, 0, 2) !== '62') {
-                $phone = '62' . $phone;
-            }
-
-            // Build detail layanan
-            $detailLayanan = "";
-            foreach ($pesanan->od as $detail) {
-                $detailLayanan .= "✔ {$detail->layanan->nama_layanan} - {$detail->berat} KG @ Rp" . number_format($detail->harga, 0, ',', '.') . " → Total Rp" . number_format($detail->subtotal, 0, ',', '.') . "\n";
-            }
-
-            // Hitung sisa tagihan
-            $sisaTagihan = $pesanan->total_harga - $pesanan->paid_amount;
-            $statusPembayaran = $pesanan->payment_status;
-            $statusText = $statusPembayaran === 'Lunas'
-                ? "Lunas ✅"
-                : "Belum Lunas (Sisa Tagihan : Rp" . number_format($sisaTagihan, 0, ',', '.') . ")";
-
-            // Build pesan WhatsApp
-            $message = "🧺 *Berlian Laundry*\n";
-            $message .= "Jl. R.E. Martadinata, Nabarua, Distrik Nabire, Kabupaten Nabire, Papua Tengah 98817\n";
-            $message .= "Telp/WA: 6281343047741\n\n";
-            $message .= "*Nomor Pesanan : #{$pesanan->resi}*\n";
-            $message .= "Pelanggan : Kak {$pesanan->customer_name}\n";
-            $message .= "Terima : " . \Carbon\Carbon::parse($pesanan->tanggal_pemesanan)->format('d/m/Y H:i') . "\n";
-            $message .= "Estimasi Selesai : " . \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d/m/Y H:i') . "\n\n";
-            $message .= "📌 *Detail Layanan:*\n";
-            $message .= $detailLayanan;
-            $message .= "\n💰 *Total Tagihan : Rp" . number_format($pesanan->total_harga, 0, ',', '.') . "*\n";
-            $message .= "Status Pembayaran : {$statusText}\n";
-            $message .= "===============================\n";
-            $message .= "📲 Pantau status cucian Anda di sini:\n";
-            $message .= "👉 " . route('user.tracking') . "\n\n";
-            $message .= "🙏 Terima kasih sudah menggunakan layanan Berlian Laundry";
-
-            // URL encode message
-            $encodedMessage = urlencode($message);
-
-            // Buat link WhatsApp
-            $waLink = "https://wa.me/{$phone}?text={$encodedMessage}";
-
-            // Update status WA sent
-            $pesanan->update([
-                'wa_sent' => true,
-                'wa_sent_at' => now(),
-            ]);
-
-            // Redirect ke WhatsApp Web/App
-            return redirect($waLink);
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal mengirim WhatsApp: ' . $e->getMessage());
+        // Format nomor telepon
+        $phone = preg_replace('/[^0-9]/', '', $pesanan->phone);
+        if (substr($phone, 0, 1) === '0') {
+            $phone = '62' . substr($phone, 1);
         }
+        if (substr($phone, 0, 2) !== '62') {
+            $phone = '62' . $phone;
+        }
+
+        // Tentukan jenis pesan berdasarkan status
+        if (in_array($pesanan->status, ['Selesai', 'Diambil'])) {
+            // PESAN SELESAI
+            $message = $this->generateCompletionMessage($pesanan);
+        } else {
+            // PESAN AWAL (Menunggu/Diproses)
+            $message = $this->generateInitialMessage($pesanan);
+        }
+
+        // URL encode message
+        $encodedMessage = urlencode($message);
+
+        // Buat link WhatsApp
+        $waLink = "https://wa.me/{$phone}?text={$encodedMessage}";
+
+        // Update status WA sent
+        $pesanan->update([
+            'wa_sent' => true,
+            'wa_sent_at' => now(),
+        ]);
+
+        // Redirect ke WhatsApp
+        return redirect($waLink);
+        
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'Gagal mengirim WhatsApp: ' . $e->getMessage());
     }
+}
+
+/**
+ * Generate Pesan Awal (Menunggu/Diproses)
+ */
+private function generateInitialMessage(Order $pesanan)
+{
+    // Build detail layanan
+    $detailLayanan = "";
+    foreach ($pesanan->od as $detail) {
+        $detailLayanan .= "▪️ *" . strtoupper($detail->layanan->nama_layanan) . "*\n";
+        $detailLayanan .= "   Berat: *{$detail->berat} KG*\n";
+        $detailLayanan .= "   Harga: Rp" . number_format($detail->harga, 0, ',', '.') . "/kg\n";
+        $detailLayanan .= "   * Subtotal: Rp" . number_format($detail->subtotal, 0, ',', '.') . "*\n\n";
+    }
+
+    // Hitung sisa tagihan
+    $sisaTagihan = $pesanan->total_harga - $pesanan->paid_amount;
+    $statusPembayaran = $pesanan->payment_status;
+    
+    if ($statusPembayaran === 'Lunas') {
+        $statusText = " *𝗟𝗨𝗡𝗔𝗦* ";
+    } else {
+        $statusText = " *𝗕𝗘𝗟𝗨𝗠 𝗟𝗨𝗡𝗔𝗦* \n";
+        $statusText .= " *Sisa Tagihan:*\n";
+        $statusText .= "*Rp" . number_format($sisaTagihan, 0, ',', '.') . "*";
+    }
+
+    // Build pesan AWAL
+    $message = "┏━━━━━━━━━━━━━━━━━━━━━┓\n";
+    $message .= "  *𝗕𝗘𝗥𝗟𝗜𝗔𝗡 𝗟𝗔𝗨𝗡𝗗𝗥𝗬*\n";
+    $message .= "┗━━━━━━━━━━━━━━━━━━━━━┛\n\n";
+    
+    $message .= " Jl. R.E. Martadinata, Nabarua\n";
+    $message .= "   Nabire, Papua Tengah 98817\n";
+    $message .= " *6281343047741*\n\n";
+    
+    $message .= " *𝗣𝗘𝗦𝗔𝗡𝗔𝗡 𝗗𝗜𝗧𝗘𝗥𝗜𝗠𝗔*\n\n";
+    $message .= "Halo *{$pesanan->customer_name}*! \n\n";
+    $message .= "Pesanan Anda telah kami terima dan sedang dalam proses pencucian.\n\n";
+    
+    $message .= " *𝗗𝗘𝗧𝗔𝗜𝗟 𝗣𝗘𝗦𝗔𝗡𝗔𝗡*\n\n";
+    $message .= " *RESI: #{$pesanan->resi}*\n";
+    $message .= " Nama: {$pesanan->customer_name}\n";
+    $message .= " HP: {$pesanan->phone}\n\n";
+
+    $message .= " *Tanggal Terima:*\n";
+    $message .= "   " . \Carbon\Carbon::parse($pesanan->tanggal_pemesanan)->format('d/m/Y H:i') . " WIT\n\n";
+    
+    $message .= " *Estimasi Selesai:*\n";
+    $message .= "   *" . \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d/m/Y H:i') . " WIT*\n\n";
+    
+    $message .= "*𝗗𝗘𝗧𝗔𝗜𝗟 𝗟𝗔𝗬𝗔𝗡𝗔𝗡*\n\n";
+    $message .= $detailLayanan;
+    
+    $message .= " *𝗧𝗢𝗧𝗔𝗟 𝗧𝗔𝗚𝗜𝗛𝗔𝗡*\n\n";
+    $message .= "      *Rp " . number_format($pesanan->total_harga, 0, ',', '.') . "*\n\n";
+    
+    $message .= " *𝗦𝗧𝗔𝗧𝗨𝗦 𝗣𝗘𝗠𝗕𝗔𝗬𝗔𝗥𝗔𝗡*\n\n";
+    $message .= "{$statusText}\n\n";
+    
+    $message .= " *𝗖𝗘𝗞 𝗦𝗧𝗔𝗧𝗨𝗦 𝗢𝗡𝗟𝗜𝗡𝗘*\n";
+    $message .= route('user.tracking') . "\n\n";
+    
+    $message .= " _Terima kasih atas kepercayaan Anda!_\n";
+    $message .= " *Berlian Laundry*\n";
+    $message .= " _Pakaian Bersih, Hati Senang!_";
+
+    return $message;
+}
+
+/**
+ * Generate Pesan Selesai (Ready to Pickup)
+ */
+private function generateCompletionMessage(Order $pesanan)
+{
+    // Build detail layanan (ringkas)
+    $detailLayanan = "";
+    foreach ($pesanan->od as $detail) {
+        $detailLayanan .= "▪️ {$detail->layanan->nama_layanan} - {$detail->berat} KG\n";
+    }
+
+    // Hitung sisa tagihan
+    $sisaTagihan = $pesanan->total_harga - $pesanan->paid_amount;
+    $statusPembayaran = $pesanan->payment_status;
+
+    // Build pesan SELESAI
+    $message = "┏━━━━━━━━━━━━━━━━━━━━━┓\n";
+    $message .= "  *𝗕𝗘𝗥𝗟𝗜𝗔𝗡 𝗟𝗔𝗨𝗡𝗗𝗥𝗬*\n";
+    $message .= "┗━━━━━━━━━━━━━━━━━━━━━┛\n\n";
+    
+    $message .= " *𝗣𝗘𝗦𝗔𝗡𝗔𝗡 𝗦𝗘𝗟𝗘𝗦𝗔𝗜!* \n\n";
+    
+    $message .= "Halo *{$pesanan->customer_name}*! \n\n";
+    
+    $message .= " Kabar baik! Cucian Anda sudah *SELESAI* dan siap untuk diambil.\n\n";
+    
+    $message .= " *𝗜𝗡𝗙𝗢 𝗣𝗘𝗦𝗔𝗡𝗔𝗡*\n\n";
+    $message .= " Nomor Resi: *#{$pesanan->resi}*\n";
+    $message .= " Nama: {$pesanan->customer_name}\n";
+    $message .= " HP: {$pesanan->phone}\n\n";
+    
+    $message .= " *Layanan:*\n";
+    $message .= $detailLayanan . "\n";
+    
+    $message .= " *𝗧𝗢𝗧𝗔𝗟 𝗧𝗔𝗚𝗜𝗛𝗔𝗡*\n";
+    $message .= "*Rp " . number_format($pesanan->total_harga, 0, ',', '.') . "*\n\n";
+    
+    if ($statusPembayaran === 'Lunas') {
+        $message .= " Status: *LUNAS*\n\n";
+    } else {
+        $message .= " Status: *Belum Lunas*\n";
+        $message .= " Sisa Tagihan: *Rp" . number_format($sisaTagihan, 0, ',', '.') . "*\n\n";
+        $message .= " _Mohon selesaikan pembayaran saat pengambilan._\n\n";
+    }
+    
+    $message .= " *𝗔𝗟𝗔𝗠𝗔𝗧 𝗣𝗘𝗡𝗚𝗔𝗠𝗕𝗜𝗟𝗔𝗡*\n\n";
+    $message .= " Jl. R.E. Martadinata, Nabarua\n";
+    $message .= "   Nabire, Papua Tengah 98817\n\n";
+    
+    $message .= " *Jam Operasional:*\n";
+    $message .= "Senin - Sabtu: 08.00 - 20.00 WIT\n";
+    $message .= "Minggu: Tutup\n\n";
+    
+    $message .= " Hubungi: *6281343047741*\n\n";
+    
+    $message .= " *Info Selengkapnya:*\n";
+    $message .= route('user.tracking') . "\n\n";
+    
+    $message .= " *Terima kasih atas kepercayaan Anda!*\n\n";
+    $message .= "Kami tunggu kedatangan Anda untuk mengambil cucian.\n\n";
+    $message .= " *Berlian Laundry*\n";
+    $message .= " _Pakaian Bersih, Hati Senang!_";
+
+    return $message;
+}
 
     /**
      * Cetak Struk
@@ -402,7 +516,6 @@ class OrderController extends Controller
 
         // Filter berdasarkan pilihan status
         if ($filterStatus === 'selesai') {
-            // Hanya ambil yang Selesai ATAU Diambil DAN sudah Lunas
             $query->whereIn('status', ['Selesai', 'Diambil'])
                   ->where('payment_status', 'Lunas');
         }
@@ -410,7 +523,7 @@ class OrderController extends Controller
         // Ambil data dan urutkan
         $orders = $query->orderBy('tanggal_pemesanan', 'desc')->get();
 
-        // Jika tidak ada data, kembalikan dengan pesan
+        // Jika tidak ada data
         if ($orders->isEmpty()) {
             $namaBulan = \Carbon\Carbon::create($tahun, $bulan)
                 ->locale('id')
@@ -420,28 +533,23 @@ class OrderController extends Controller
                 ->with('error', "Tidak ada data pesanan untuk periode {$namaBulan}");
         }
 
-        // Nama bulan dalam bahasa Indonesia
+        // Nama bulan
         $namaBulan = \Carbon\Carbon::create($tahun, $bulan)
             ->locale('id')
             ->translatedFormat('F Y');
 
-        // Load view menjadi PDF
+        // Generate PDF (SIMPLIFIED)
         $pdf = Pdf::loadView('admin.pesanan.pdf', [
             'orders' => $orders,
             'namaBulan' => $namaBulan,
             'filterStatus' => $filterStatus,
-        ])
-        ->setPaper('A4', 'portrait')
-        ->setOption('margin-top', 10)
-        ->setOption('margin-bottom', 10)
-        ->setOption('margin-left', 10)
-        ->setOption('margin-right', 10);
+        ])->setPaper('A4', 'portrait');
 
-        // Generate filename
+        // Filename
         $statusLabel = $filterStatus === 'selesai' ? 'Selesai_Lunas' : 'Semua';
-        $filename = 'Rekap_Pesanan_' . $statusLabel . '_' . str_replace(' ', '_', $namaBulan) . '_' . now()->format('d-m-Y_His') . '.pdf';
+        $filename = 'Rekap_Pesanan_' . $statusLabel . '_' . str_replace(' ', '_', $namaBulan) . '.pdf';
         
-        // Download file
+        // Download
         return $pdf->download($filename);
         
     } catch (\Exception $e) {

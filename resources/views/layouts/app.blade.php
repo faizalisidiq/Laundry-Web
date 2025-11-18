@@ -12,203 +12,236 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-    .sidebar {
-      width: 240px;
-      height: 100vh;
-      position: fixed;
-      left: 0;
-      top: 0;
-      background: linear-gradient(135deg, #ff9d13ff 30%, #F5C16B 100%);
-      color: #fff;
-      padding-top: 1rem;
-      padding-bottom: 2rem;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-    .sidebar a {
-      color: #ffffffcc;
-      text-decoration: none;
-      display: block;
-      padding: 12px 20px;
-      transition: all 0.3s;
-      border-left: 3px solid transparent;
-    }
-    .sidebar a:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #fff;
-      border-left-color: #fff;
-    }
-    .sidebar a.active {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      border-left-color: #fff;
-      font-weight: 600;
-    }
+
     .content {
       margin-left: 240px;
       padding: 20px;
+      transition: margin-left 0.3s ease;
     }
+
     .navbar {
       margin-left: 240px;
       background: #ffffff;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: margin-left 0.3s ease;
     }
 
-       nav[role="navigation"] svg {
-  width: 16px !important;   /* default 20px */
-  height: 16px !important;
-}
+    /* User info responsive */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-/* Jika masih terasa besar, ubah jadi 14px */
-nav[role="navigation"] svg {
-  width: 14px !important;
-  height: 14px !important;
-  padding top: 10px;
-}
+    .user-name {
+      display: inline;
+    }
 
-/* Opsional: atur font dan jarak tombol pagination */
-nav[role="navigation"] span,
-nav[role="navigation"] a {
-  font-size: 14px !important;
-  height: 14px !important;
-  padding: 4px 8px !important;
-}
+    /* Pagination styles */
+    nav[role="navigation"] svg {
+      width: 14px !important;
+      height: 14px !important;
+    }
 
-.text-sm.text-gray-700.leading-5.dark\:text-gray-400 {
-    display: none !important;
-}
+    nav[role="navigation"] span,
+    nav[role="navigation"] a {
+      font-size: 14px !important;
+      padding: 4px 8px !important;
+    }
 
+    .text-sm.text-gray-700.leading-5.dark\:text-gray-400 {
+      display: none !important;
+    }
 
-        .bubbles {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
+    /* ========== RESPONSIVE MOBILE ========== */
+    @media (max-width: 768px) {
+      .content {
+        margin-left: 0 !important;
+        padding: 15px !important;
+        margin-top: 70px; /* Space for fixed navbar */
+      }
 
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 40% 40%, 
-                rgba(24, 186, 255, 0.5), 
-                rgba(255, 189, 145, 0.3));
-            opacity: 0.7;
-            animation: floatBubble linear infinite;
-            box-shadow: 
-                inset 0 10px 20px rgba(255, 255, 255, 0.3),
-                0 4px 15px rgba(52, 152, 219, 0.2);
-        }
+      .navbar {
+        margin-left: 0 !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 998;
+        padding-left: 60px !important; /* Space for hamburger */
+      }
 
-        .bubble::before {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 15%;
-            width: 40%;
-            height: 40%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
-            border-radius: 50%;
-        }
+      .navbar .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
 
-        .bubble:nth-child(1) {
-            width: 90px;
-            height: 90px;
-            left: 8%;
-            bottom: -100px;
-            animation-duration: 12s;
-            animation-delay: 0s;
-            background: radial-gradient(circle at 30% 30%, rgba(52, 152, 219, 0.6), rgba(255, 154, 86, 0.4));
-        }
+      .navbar-brand {
+        font-size: 1rem !important;
+      }
 
-        .bubble:nth-child(2) {
-            width: 60px;
-            height: 60px;
-            left: 22%;
-            bottom: -80px;
-            animation-duration: 14s;
-            animation-delay: 2s;
-            background: radial-gradient(circle at 30% 30%, rgba(100, 181, 246, 0.5), rgba(255, 167, 38, 0.3));
-        }
+      .user-name {
+        display: none; /* Hide "Halo, Username" on mobile */
+      }
 
-        .bubble:nth-child(3) {
-            width: 45px;
-            height: 45px;
-            left: 42%;
-            bottom: -60px;
-            animation-duration: 10s;
-            animation-delay: 4s;
-        }
+      .user-info img {
+        width: 35px !important;
+        height: 35px !important;
+      }
 
-        .bubble:nth-child(4) {
-            width: 75px;
-            height: 75px;
-            left: 58%;
-            bottom: -90px;
-            animation-duration: 13s;
-            animation-delay: 1s;
-            background: radial-gradient(circle at 30% 30%, rgba(66, 165, 245, 0.55), rgba(255, 183, 77, 0.35));
-        }
+      /* Cards responsive */
+      .card {
+        margin-bottom: 15px;
+      }
 
-        .bubble:nth-child(5) {
-            width: 50px;
-            height: 50px;
-            left: 73%;
-            bottom: -70px;
-            animation-duration: 11s;
-            animation-delay: 3s;
-        }
+      .card-body {
+        padding: 15px;
+      }
 
-        .bubble:nth-child(6) {
-            width: 85px;
-            height: 85px;
-            left: 88%;
-            bottom: -95px;
-            animation-duration: 15s;
-            animation-delay: 0.5s;
-            background: radial-gradient(circle at 30% 30%, rgba(41, 128, 185, 0.6), rgba(255, 193, 7, 0.4));
-        }
+      /* Table responsive */
+      .table-responsive {
+        font-size: 0.85rem;
+      }
 
-        .bubble:nth-child(7) {
-            width: 55px;
-            height: 55px;
-            left: 12%;
-            bottom: -75px;
-            animation-duration: 12.5s;
-            animation-delay: 2.5s;
-        }
+      .table th,
+      .table td {
+        padding: 8px 5px;
+        white-space: nowrap;
+      }
 
-        .bubble:nth-child(8) {
-            width: 65px;
-            height: 65px;
-            left: 35%;
-            bottom: -85px;
-            animation-duration: 13.5s;
-            animation-delay: 1.8s;
-            background: radial-gradient(circle at 30% 30%, rgba(30, 136, 229, 0.5), rgba(255, 160, 0, 0.35));
-        }
+      /* Button groups */
+      .btn-group-sm .btn {
+        padding: 4px 6px;
+        font-size: 0.75rem;
+      }
 
-        .bubble:nth-child(9) {
-            width: 70px;
-            height: 70px;
-            left: 65%;
-            bottom: -80px;
-            animation-duration: 11.5s;
-            animation-delay: 3.5s;
-        }
+      /* Form controls */
+      .form-select,
+      .form-control {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+      }
 
-        .bubble:nth-child(10) {
-            width: 40px;
-            height: 40px;
-            left: 80%;
-            bottom: -60px;
-            animation-duration: 10.5s;
-            animation-delay: 4.5s;
-        }
+      /* Alert */
+      .alert {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+      }
+
+      /* Dashboard stats cards */
+      .col-md-3,
+      .col-md-4,
+      .col-md-6,
+      .col-md-8 {
+        margin-bottom: 15px;
+      }
+
+      /* Hide table columns on mobile */
+      .hide-mobile {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content {
+        padding: 10px !important;
+      }
+
+      .card-body {
+        padding: 12px;
+      }
+
+      h4, h5 {
+        font-size: 1.1rem;
+      }
+
+      h3 {
+        font-size: 1.3rem;
+      }
+
+      .table {
+        font-size: 0.75rem;
+      }
+
+      .btn-sm {
+        font-size: 0.7rem;
+        padding: 3px 5px;
+      }
+
+      .badge {
+        font-size: 0.7rem;
+        padding: 3px 6px;
+      }
+    }
+
+    /* ========== TABLE RESPONSIVE IMPROVEMENTS ========== */
+    @media (max-width: 768px) {
+      /* Stack table cells vertically */
+      .table-responsive table {
+        border: 0;
+      }
+
+      .table-responsive table thead {
+        display: none;
+      }
+
+      .table-responsive table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      }
+
+      .table-responsive table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border: none;
+        border-bottom: 1px solid #f0f0f0;
+        white-space: normal;
+      }
+
+      .table-responsive table td:last-child {
+        border-bottom: none;
+      }
+
+      .table-responsive table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 10px;
+        color: #6c757d;
+        font-size: 0.85rem;
+      }
+
+      /* Button group in mobile */
+      .table-responsive .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: flex-end;
+        width: 100%;
+      }
+
+      .table-responsive .btn-group .btn {
+        flex: 0 0 auto;
+      }
+    }
+
+    /* ========== FORM RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .row.g-3 {
+        gap: 10px !important;
+      }
+
+      .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+      }
+    }
+
     @yield('styles')
   </style>
 </head>
@@ -221,8 +254,8 @@ nav[role="navigation"] a {
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container-fluid">
       <span class="navbar-brand mb-0 h5">@yield('page-title', 'Dashboard')</span>
-      <div class="d-flex align-items-center">
-        <span class="me-3 text-secondary">Halo, {{ Auth::user()->name }}</span>
+      <div class="user-info">
+        <span class="me-3 text-secondary user-name">Halo, {{ Auth::user()->name }}</span>
         <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=0d6efd&color=fff"
              class="rounded-circle" width="40" height="40" alt="User Avatar">
       </div>
@@ -254,21 +287,44 @@ nav[role="navigation"] a {
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const successAlert = document.getElementById('successAlert');
-        if (successAlert) {
-            setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(successAlert);
-                bsAlert.close();
-            }, 3000); // 3000ms = 3 detik
-        }
-        const errorAlert = document.getElementById('errorAlert');
-        if (errorAlert) {
-            setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(errorAlert);
-                bsAlert.close();
-            }, 5000); // 5000ms = 5 detik
-        }
-    </script>
+  <script>
+    // Auto dismiss alerts
+    const successAlert = document.getElementById('successAlert');
+    if (successAlert) {
+      setTimeout(function() {
+        const bsAlert = new bootstrap.Alert(successAlert);
+        bsAlert.close();
+      }, 3000);
+    }
+
+    const errorAlert = document.getElementById('errorAlert');
+    if (errorAlert) {
+      setTimeout(function() {
+        const bsAlert = new bootstrap.Alert(errorAlert);
+        bsAlert.close();
+      }, 5000);
+    }
+
+    // Add data-label to table cells for mobile view
+    document.addEventListener('DOMContentLoaded', function() {
+      const tables = document.querySelectorAll('.table-responsive table');
+      
+      tables.forEach(table => {
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.trim());
+        const rows = table.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+          const cells = row.querySelectorAll('td');
+          cells.forEach((cell, index) => {
+            if (headers[index]) {
+              cell.setAttribute('data-label', headers[index]);
+            }
+          });
+        });
+      });
+    });
+  </script>
+
+  @yield('scripts')
 </body>
 </html>
