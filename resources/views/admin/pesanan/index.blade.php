@@ -183,7 +183,7 @@ nav[role="navigation"] a {
         <label class="form-label fw-bold">Status</label>
         <select name="filter_status" class="form-select">
           <option value="all">Semua Status</option>
-          <option value="selesai" selected>Selesai & Lunas</option>
+          <option value="selesai" selected>diambil & Lunas</option>
         </select>
       </div>
       <div class="col-md-3">
@@ -331,7 +331,7 @@ nav[role="navigation"] a {
 
           <!-- Pagination -->
           <div class="d-flex justify-content-end mt-3">
-            {{ $orders->links('vendor.pagination.simple-numbers') }}
+            {{ $orders->links('pagination::bootstrap-5') }}
           </div>
         </div>
       </div>

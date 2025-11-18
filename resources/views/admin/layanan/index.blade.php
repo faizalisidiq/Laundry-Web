@@ -155,7 +155,7 @@
 
           <!-- Pagination -->
           <div class="d-flex justify-content-end mt-3">
-            {{ $layanans->links() }}
+           {{ $layanans->links('pagination::bootstrap-5') }}
           </div>
         </div>
       </div>

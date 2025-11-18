@@ -95,7 +95,7 @@
 
     <!-- Pagination -->
     <div class="d-flex justify-content-end mt-3">
-      {{ $roles->links() }}
+      {{ $roles->links('pagination::bootstrap-5') }}
     </div>
   </div>
 </div>
