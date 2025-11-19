@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     // Pesanan - Admin dan Superadmin
     Route::middleware('role:admin,karyawan')->group(function () {
         Route::get('/pesanan/export', [OrderController::class, 'ExportPdf'])->name('pesanan.export');
+        Route::get('/pesanan/customers', [OrderController::class, 'getCustomers'])->name('pesanan.customers');
         Route::resource('pesanan', OrderController::class);
 
         // Additional routes untuk pesanan

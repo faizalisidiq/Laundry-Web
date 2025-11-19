@@ -557,4 +557,32 @@ private function generateCompletionMessage(Order $pesanan)
             ->with('error', 'Gagal mengekspor PDF: ' . $e->getMessage());
     }
 }
+
+/**
+ * Get customer data for autocomplete
+ */
+public function getCustomers(Request $request)
+{
+    $search = $request->get('q', '');
+    
+    $customers = Order::select('customer_name', 'phone')
+        ->when($search, function($query) use ($search) {
+            $query->where('customer_name', 'like', "%{$search}%");
+        })
+        ->groupBy('customer_name', 'phone')
+        ->orderBy('customer_name')
+        ->limit(10)
+        ->get()
+        ->map(function($customer) {
+            return [
+                'id' => $customer->customer_name,
+                'text' => $customer->customer_name,
+                'phone' => $customer->phone
+            ];
+        });
+    
+    return response()->json([
+        'results' => $customers
+    ]);
+}
 }

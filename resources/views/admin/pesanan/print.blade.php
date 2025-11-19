@@ -37,14 +37,14 @@
     
     .header h2 {
       font-size: 22px;
-      font-weight: 900; /* Black */
+      font-weight: 900;
       margin-bottom: 5px;
       letter-spacing: 1px;
     }
     
     .header p {
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 900;
       line-height: 1.6;
       margin: 2px 0;
     }
@@ -52,7 +52,7 @@
     .section {
       margin: 12px 0;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 900;
     }
     
     .section-title {
@@ -69,7 +69,7 @@
       justify-content: space-between;
       margin: 5px 0;
       line-height: 1.6;
-      font-weight: 700;
+      font-weight: 900;
     }
     
     .row.bold {
@@ -79,7 +79,7 @@
     
     .label {
       flex: 0 0 45%;
-      font-weight: 700;
+      font-weight: 900;
     }
     
     .value {
@@ -104,7 +104,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 900;
     }
     
     .total-section {
@@ -118,7 +118,7 @@
       justify-content: space-between;
       margin: 6px 0;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 900;
     }
     
     .total-row.grand {
@@ -138,7 +138,7 @@
     }
     
     .payment-info .row {
-      font-weight: 800;
+      font-weight: 900;
     }
     
     .footer {
@@ -147,11 +147,12 @@
       padding-top: 12px;
       border-top: 3px solid #000;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 900;
     }
     
     .footer p {
       margin: 5px 0;
+      font-weight: 900;
     }
     
     .footer strong {
@@ -182,7 +183,7 @@
       padding: 12px 30px;
       margin: 5px;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 900;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -313,20 +314,6 @@
       </div>
     </div>
 
-    <!-- Detail Layanan -->
-    <div class="section">
-      <div class="section-title">DETAIL LAYANAN</div>
-      @foreach($pesanan->od as $detail)
-      <div class="item-detail">
-        <div class="item-name">{{ strtoupper($detail->layanan->nama_layanan) }}</div>
-        <div class="item-calc">
-          <span>{{ $detail->berat }} Kg × Rp {{ number_format($detail->harga, 0, ',', '.') }}</span>
-          <span style="font-weight: 900;">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
-        </div>
-      </div>
-      @endforeach
-    </div>
-
     <!-- Total -->
     <div class="total-section">
       <div class="total-row grand">
@@ -361,7 +348,7 @@
       <p>═════════════════════</p>
       <p style="margin-top: 10px; font-weight: 900;">🙏 TERIMA KASIH</p>
       <p><strong>BERLIAN LAUNDRY</strong></p>
-      <p style="margin-top: 8px; font-size: 10px; font-weight: 600;">Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
+      <p style="margin-top: 8px; font-size: 10px; font-weight: 900;">Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
   </div>
 
