@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Struk Laundry - {{ $pesanan->resi }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -12,160 +13,194 @@
     }
     
     body {
-      font-family: 'Courier New', 'Consolas', monospace;
+      font-family: 'Courier Prime', 'Consolas', 'Courier New', monospace;
       width: 80mm;
       margin: 0 auto;
       padding: 10px;
       background: white;
-      font-weight: 900;
+      font-weight: 700;
+      line-height: 1.2;
       -webkit-font-smoothing: none;
       text-rendering: optimizeSpeed;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     
     .struk {
       width: 100%;
-      border: 3px dashed #000;
-      padding: 15px;
+      border: 3px solid #000;
+      padding: 12px;
+      background: white;
     }
     
     .header {
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       border-bottom: 3px solid #000;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
     
     .header h2 {
-      font-size: 22px;
-      font-weight: 900;
-      margin-bottom: 5px;
-      letter-spacing: 1px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 3px;
+      letter-spacing: 0.5px;
     }
     
     .header p {
-      font-size: 12px;
-      font-weight: 900;
-      line-height: 1.6;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
       margin: 2px 0;
     }
     
     .section {
-      margin: 12px 0;
-      font-size: 13px;
-      font-weight: 900;
+      margin: 10px 0;
+      font-size: 12px;
+      font-weight: 700;
     }
     
     .section-title {
-      font-weight: 900;
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 6px;
       border-bottom: 2px solid #000;
-      padding-bottom: 5px;
-      letter-spacing: 0.5px;
+      padding-bottom: 4px;
+      letter-spacing: 0.3px;
     }
     
     .row {
       display: flex;
       justify-content: space-between;
-      margin: 5px 0;
-      line-height: 1.6;
-      font-weight: 900;
+      margin: 4px 0;
+      line-height: 1.3;
+      font-weight: 700;
+      font-size: 12px;
     }
     
     .row.bold {
-      font-weight: 900;
-      font-size: 14px;
+      font-weight: 700;
+      font-size: 13px;
     }
     
     .label {
-      flex: 0 0 45%;
-      font-weight: 900;
+      flex: 0 0 50%;
+      font-weight: 700;
     }
     
     .value {
       flex: 1;
       text-align: right;
-      font-weight: 900;
+      font-weight: 700;
     }
     
     .item-detail {
-      margin: 8px 0;
-      padding: 8px 0;
+      margin: 6px 0;
+      padding: 6px 0;
       border-bottom: 2px dotted #000;
+      font-weight: 700;
     }
     
     .item-name {
       font-weight: 900;
-      font-size: 14px;
-      margin-bottom: 4px;
+      font-size: 13px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     .item-calc {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .item-calc.weight {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .item-calc.quantity {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .item-subtotal {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 13px;
       font-weight: 900;
+      color: #000;
+      margin-top: 2px;
+      padding-top: 2px;
+      border-top: 1px solid #000;
     }
     
     .total-section {
-      margin-top: 12px;
-      padding-top: 12px;
+      margin-top: 10px;
+      padding-top: 10px;
       border-top: 3px solid #000;
     }
     
     .total-row {
       display: flex;
       justify-content: space-between;
-      margin: 6px 0;
-      font-size: 15px;
-      font-weight: 900;
+      margin: 5px 0;
+      font-size: 14px;
+      font-weight: 700;
     }
     
     .total-row.grand {
       font-weight: 900;
-      font-size: 18px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 2px dashed #000;
-      letter-spacing: 0.5px;
+      font-size: 16px;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      letter-spacing: 0.3px;
     }
     
     .payment-info {
-      background: #f0f0f0;
-      padding: 10px;
-      margin: 12px 0;
+      background: #fff;
+      padding: 8px;
+      margin: 10px 0;
       border: 2px solid #000;
     }
     
     .payment-info .row {
-      font-weight: 900;
+      font-weight: 700;
     }
     
     .footer {
       text-align: center;
-      margin-top: 15px;
-      padding-top: 12px;
+      margin-top: 12px;
+      padding-top: 10px;
       border-top: 3px solid #000;
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 11px;
+      font-weight: 700;
     }
     
     .footer p {
-      margin: 5px 0;
-      font-weight: 900;
+      margin: 4px 0;
+      font-weight: 700;
     }
     
     .footer strong {
-      font-weight: 900;
+      font-weight: 700;
     }
     
     .barcode {
       text-align: center;
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      margin: 12px 0;
-      padding: 12px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 10px 0;
+      padding: 10px;
       border: 3px solid #000;
       background: #fff;
     }
@@ -183,8 +218,8 @@
       padding: 12px 30px;
       margin: 5px;
       font-size: 16px;
-      font-weight: 900;
-      border: none;
+      font-weight: 700;
+      border: 2px solid #000;
       border-radius: 6px;
       cursor: pointer;
       transition: all 0.3s;
@@ -223,10 +258,11 @@
         width: 80mm;
         margin: 0;
         padding: 0;
+        font-weight: 700;
       }
       
       .struk {
-        border: none;
+        border: 2px solid #000;
         padding: 10px;
       }
 
@@ -237,18 +273,24 @@
       @page {
         size: 80mm auto;
         margin: 0;
+        padding: 0;
       }
 
-      /* Extra tebal untuk print */
-      body, .section, .row, .label, .value {
-        font-weight: 900 !important;
+      /* Sangat tebal untuk print */
+      * {
+        font-weight: 700 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
+        color: #000 !important;
       }
 
-      .header h2, .section-title, .item-name, .total-row.grand {
+      body, .section, .row, .label, .value, .section-title, .item-name, .total-row, .item-calc, .item-subtotal {
+        font-weight: 700 !important;
+      }
+
+      .header h2, .section-title, .item-name, .total-row.grand, .barcode, .item-subtotal {
         font-weight: 900 !important;
-        text-shadow: 0.5px 0.5px 0 #000;
+        letter-spacing: 0.5px;
       }
     }
     
@@ -264,10 +306,7 @@
   <!-- Print Buttons (Hidden saat print) -->
   <div class="print-buttons">
     <button class="print-btn primary" onclick="window.print()">
-      🖨️ Print Struk (Printer Biasa)
-    </button>
-    <button class="print-btn success" onclick="printThermal()">
-      📄 Print Thermal
+      🖨️ Print Struk
     </button>
     <button class="print-btn secondary" onclick="window.close()">
       ❌ Tutup
@@ -308,16 +347,41 @@
         <span class="label">Est. Selesai</span>
         <span class="value">{{ \Carbon\Carbon::parse($pesanan->tanggal_selesai)->format('d/m/Y H:i') }}</span>
       </div>
-      <div class="row">
-        <span class="label">Kasir</span>
-        <span class="value">{{ $pesanan->user->name }}</span>
-      </div>
     </div>
+
+    <!-- Detail Layanan -->
+    @if($pesanan->detail_layanan)
+    <div class="section">
+      <div class="section-title">DETAIL LAYANAN</div>
+      @foreach($pesanan->detail_layanan as $detail)
+      <div class="item-detail">
+        <div class="item-name">{{ strtoupper($detail->layanan->nama_layanan) }}</div>
+        <div class="item-calc weight">
+          <span>{{ $detail->berat }} Kg × Rp {{ number_format($detail->harga, 0, ',', '.') }}/Kg</span>
+          <span>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+        </div>
+        @if($detail->kuantitas > 1)
+        <div class="item-calc quantity">
+          <span>{{ $detail->kuantitas }} x</span>
+          <span>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+        </div>
+        @endif
+        <div class="item-subtotal">
+          <span>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</span>
+        </div>
+      </div>
+      @endforeach
+    </div>
+    @endif
 
     <!-- Total -->
     <div class="total-section">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span>Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
+      </div>
       <div class="total-row grand">
-        <span>TOTAL TAGIHAN</span>
+        <span>TOTAL</span>
         <span>Rp {{ number_format($pesanan->total_harga, 0, ',', '.') }}</span>
       </div>
     </div>
@@ -333,7 +397,7 @@
         <span class="value">Rp {{ number_format($pesanan->paid_amount, 0, ',', '.') }}</span>
       </div>
       @if($pesanan->payment_status == 'Belum Lunas')
-      <div class="row bold" style="color: #dc3545;">
+      <div class="row bold">
         <span class="label">SISA TAGIHAN</span>
         <span class="value">Rp {{ number_format($pesanan->total_harga - $pesanan->paid_amount, 0, ',', '.') }}</span>
       </div>
@@ -342,35 +406,16 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p>═════════════════════</p>
+      <p>═══════════════════</p>
       <p><strong>Cek Status Cucian:</strong></p>
-      <p style="font-size: 11px;">{{ route('user.tracking') }}</p>
-      <p>═════════════════════</p>
-      <p style="margin-top: 10px; font-weight: 900;">🙏 TERIMA KASIH</p>
+      <p style="font-size: 10px;">{{ route('user.tracking') }}</p>
+      <p>═══════════════════</p>
+      <p style="margin-top: 8px;">🙏 TERIMA KASIH</p>
       <p><strong>BERLIAN LAUNDRY</strong></p>
-      <p style="margin-top: 8px; font-size: 10px; font-weight: 900;">Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
+      <p style="margin-top: 6px; font-size: 10px;">Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
   </div>
 
-  <script>
-    // Function untuk print thermal (ESC/POS)
-    function printThermal() {
-      // Cek apakah browser support Web Bluetooth API
-      if (!navigator.bluetooth) {
-        alert('Browser Anda tidak mendukung Web Bluetooth. Gunakan Chrome/Edge terbaru.');
-        return;
-      }
 
-      alert('Fitur print thermal memerlukan printer bluetooth yang support ESC/POS.\n\nUntuk saat ini, silakan gunakan Print Struk biasa atau screenshot struk ini.');
-      
-      // Alternatif: auto print biasa
-      window.print();
-    }
-
-    // Optional: Auto print on load (comment jika tidak mau auto print)
-    // window.onload = function() {
-    //   setTimeout(() => window.print(), 500);
-    // }
-  </script>
 </body>
 </html>
